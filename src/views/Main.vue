@@ -11,7 +11,7 @@
                 <el-main class="main">
                     <div class="breadcrumb-container">
                         <el-breadcrumb separator="/" class="breadcrumb-inner">
-                            <el-breadcrumb-item>当前位置：{{roles}}</el-breadcrumb-item>
+                            <el-breadcrumb-item>当前位置：首页</el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
                     <transition name="fade" mode="out-in">
@@ -38,22 +38,43 @@
       return {
         menus: [
           {
-            title: '可视化建站',
-            url: {
-              name: 'dashboard'
-            },
-            icon: 'el-icon-fa-bell'
+            title: '控制面板',
+            url: 'dashboard',
+            icon: 'el-icon-bell'
+          },
+          {
+            title: '推荐管理',
+            url: 'recommend',
+            icon: 'el-icon-star-on'
+          },
+          {
+            title: '内容管理',
+            url: 'content',
+            icon: 'el-icon-document'
+          },
+          {
+            title: '系统设置',
+            icon: 'el-icon-setting',
+            url: 'system',
+            subMenus: [
+              {
+                title: '模型管理',
+                url: 'system_models'
+              }
+            ]
           }
         ]
       }
     },
     components: {headerMenu, sideMenu, footerMenu},
     computed: {
-      ...mapGetters([
-        'roles'
-      ])
+      ...mapGetters([])
     },
     mounted () {
+      return this.$store.dispatch('getMyInfo').catch(() => {
+        this.$store.dispatch('logout')
+        this.$router.push({name: 'signIn'})
+      })
     }
   }
 </script>

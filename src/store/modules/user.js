@@ -4,7 +4,6 @@ import { setToken, removeToken } from '@/utils/token'
 const state = {
   email: '',
   avatar: '',
-  token: '',
   roles: [],
   permissions: []
 }
@@ -12,7 +11,6 @@ const state = {
 const getters = {
   email: state => state.email,
   avatar: state => state.avatar,
-  token: state => state.token,
   roles: state => state.roles,
   permissions: state => state.permissions
 }
@@ -20,16 +18,12 @@ const getters = {
 const actions = {
   signUp ({commit}, userInfo) {
     return signUp(userInfo).then((response) => {
-      const token = response.data.token
-      setToken(token)
-      commit('setToken', token)
+      setToken(response.data.token)
     })
   },
   signIn ({commit}, {userName, password}) {
     return signIn(userName, password).then((response) => {
-      const token = response.data.token
-      setToken(token)
-      commit('setToken', token)
+      setToken(response.data.token)
     })
   },
   logout ({commit}) {
@@ -37,7 +31,6 @@ const actions = {
     commit('setAvatar', '')
     commit('setRoles', '')
     commit('setPermissions', '')
-    commit('setToken', '')
     removeToken()
   },
   getMyInfo ({commit}) {
@@ -53,9 +46,6 @@ const actions = {
 }
 
 const mutations = {
-  setToken (state, token) {
-    state.token = token
-  },
   setEmail (state, email) {
     state.email = email
   },

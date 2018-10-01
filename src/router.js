@@ -4,11 +4,8 @@ import NProgress from 'nprogress/nprogress'
 import store from './store'
 import { getToken } from '@/utils/token'
 
-const passport = () => import(/* webpackChunkName: "passports" */ './views/Passport.vue')
-const signIn = () => import(/* webpackChunkName: "passports" */ './views/Passport/SignIn.vue')
-const signUp = () => import(/* webpackChunkName: "passports" */ './views/Passport/SignUp.vue')
-const main = () => import(/* webpackChunkName: "home" */ './views/Main.vue')
 const dashboard = () => import(/* webpackChunkName: "home" */ './views/Home/Dashboard.vue')
+const main = () => import(/* webpackChunkName: "home" */ './views/Main.vue')
 
 Vue.use(Router)
 
@@ -19,23 +16,23 @@ const router = new Router({
     {
       path: '/passports',
       name: 'passports',
-      component: passport,
+      component: () => import(/* webpackChunkName: "passports" */ './views/Passport.vue'),
       meta: {authorization: false},
       children: [
         {
           path: 'signin',
           name: 'signIn',
-          component: signIn
+          component: () => import(/* webpackChunkName: "passports" */ './views/Passport/SignIn.vue')
         },
         {
           path: 'signup',
           name: 'signUp',
-          component: signUp
+          component: () => import(/* webpackChunkName: "passports" */ './views/Passport/SignUp.vue')
         }
       ]
     }, {
       path: '/',
-      name: 'main',
+      name: 'home',
       redirect: 'dashboard',
       component: main,
       meta: {authorization: true},
@@ -44,6 +41,19 @@ const router = new Router({
           path: 'dashboard',
           name: 'dashboard',
           component: dashboard
+        }
+      ]
+    }, {
+      path: '/system',
+      name: 'system',
+      component: main,
+      redirect: '/system/models',
+      meta: {authorization: true},
+      children: [
+        {
+          path: 'models',
+          name: 'system_models',
+          component: () => import(/* webpackChunkName: "system" */ './views/System/Models/ModelList.vue')
         }
       ]
     }, {
@@ -60,23 +70,15 @@ router.beforeEach(function (to, from, next) {
     return next()
   }
 
-  if (getToken()) {
-    return store.dispatch('getMyInfo').then(() => {
-      next()
-    }).catch(() => {
-      store.dispatch('logout')
-      redirectToLogin()
-    })
-  }
-
-  redirectToLogin()
-
-  function redirectToLogin () {
-    next({
+  if (!getToken()) {
+    store.dispatch('logout')
+    return next({
       name: 'signIn',
       query: {redirect: to.fullPath}
     })
   }
+
+  next()
 })
 
 // After navigation is confirmed, but before resolving...
@@ -86,6 +88,7 @@ router.beforeResolve((routeTo, routeFrom, next) => {
     // Start the route progress bar.
     NProgress.start()
   }
+
   next()
 })
 

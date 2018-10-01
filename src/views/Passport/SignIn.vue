@@ -21,7 +21,7 @@
         isSubmitting: false,
         form: {
           userName: '15930181489',
-          password: 'Pass@word1'
+          password: '123123'
         },
         rules: {
           userName: [
@@ -49,22 +49,19 @@
               userName: this.form.userName,
               password: this.form.password
             }).then(() => {
-              this.redirectPage()
+              let redirectUrl = this.$route.query.redirect
+
+              if (redirectUrl) {
+                this.$router.push({path: redirectUrl})
+              } else {
+                this.$router.push({name: 'dashboard'})
+              }
             }).catch(({response}) => {
               this.isSubmitting = false
               this.$message.warning(response.data.desc)
             })
           }
         })
-      },
-      redirectPage () {
-        let redirectUrl = this.$route.query.redirect
-
-        if (redirectUrl) {
-          this.$router.push({path: redirectUrl})
-        } else {
-          this.$router.push({name: 'home'})
-        }
       }
     }
   }
