@@ -4,8 +4,7 @@ import NProgress from 'nprogress/nprogress'
 import store from './store'
 import { getToken } from '@/utils/token'
 
-const dashboard = () => import(/* webpackChunkName: "home" */ './views/Home/Dashboard.vue')
-const main = () => import(/* webpackChunkName: "home" */ './views/Main.vue')
+const signIn = () => import(/* webpackChunkName: "passports" */ './views/Passport/SignIn.vue')
 
 Vue.use(Router)
 
@@ -14,51 +13,13 @@ const router = new Router({
   linkActiveClass: 'active',
   routes: [
     {
-      path: '/passports',
-      name: 'passports',
-      component: () => import(/* webpackChunkName: "passports" */ './views/Passport.vue'),
-      meta: {authorization: false},
-      children: [
-        {
-          path: 'signin',
-          name: 'signIn',
-          component: () => import(/* webpackChunkName: "passports" */ './views/Passport/SignIn.vue')
-        },
-        {
-          path: 'signup',
-          name: 'signUp',
-          component: () => import(/* webpackChunkName: "passports" */ './views/Passport/SignUp.vue')
-        }
-      ]
-    }, {
-      path: '/',
-      name: 'home',
-      redirect: 'dashboard',
-      component: main,
-      meta: {authorization: true},
-      children: [
-        {
-          path: 'dashboard',
-          name: 'dashboard',
-          component: dashboard
-        }
-      ]
-    }, {
-      path: '/system',
-      name: 'system',
-      component: main,
-      redirect: '/system/models',
-      meta: {authorization: true},
-      children: [
-        {
-          path: 'models',
-          name: 'system_models',
-          component: () => import(/* webpackChunkName: "system" */ './views/System/Models/ModelList.vue')
-        }
-      ]
+      path: '/signIn',
+      name: 'signIn',
+      component: signIn,
+      meta: {authorization: false}
     }, {
       path: '*',
-      component: dashboard
+      component: signIn
     }
   ]
 })
