@@ -13,32 +13,42 @@ const Dashboard = () => import(/* webpackChunkName: "dashboard" */ '../views/Das
 
 Vue.use(Router)
 
+export const routes = [
+  {
+    path: '/signIn',
+    name: 'signIn',
+    component: SignIn,
+    meta: {
+      authorization: false
+    }
+  }, {
+    path: '',
+    component: DefaultLayout,
+    redirect: 'dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: Dashboard,
+        name: 'Dashboard',
+        meta: {
+          authorization: true,
+          title: 'dashboard',
+          icon: 'dashboard',
+          noCache: true
+        }
+      }
+    ]
+  }, {
+    path: '*',
+    component: SignIn
+  }
+]
+
 const router = new Router({
   mode: 'hash',
   linkActiveClass: 'active',
-  routes: [
-    {
-      path: '/signIn',
-      name: 'signIn',
-      component: SignIn,
-      meta: {authorization: false}
-    }, {
-      path: '',
-      component: DefaultLayout,
-      redirect: 'dashboard',
-      children: [
-        {
-          path: 'dashboard',
-          component: Dashboard,
-          name: 'Dashboard',
-          meta: {title: 'dashboard', icon: 'dashboard', noCache: true}
-        }
-      ]
-    }, {
-      path: '*',
-      component: SignIn
-    }
-  ]
+  scrollBehavior: () => ({y: 0}),
+  routes: routes
 })
 
 router.beforeEach(function (to, from, next) {
@@ -46,19 +56,38 @@ router.beforeEach(function (to, from, next) {
 
   NProgress.start()
 
-  if (!requireAuth) {
-    return next()
+  if (getToken()) {
+    if (to.path === '/signIn') {
+      next({path: '/'})
+      NProgress.done()
+    } else {
+      // 判断当前用户是否已拉取完user_info信息
+      if (store.getters.roles.length === 0) {
+        // 拉取user_info
+        store.dispatch('getMyInfo').then(() => {
+          next({...to, replace: true})
+        }).catch(() => {
+          store.dispatch('logout')
+          next({
+            name: 'signIn',
+            query: {redirect: to.fullPath}
+          })
+        })
+      } else {
+        next()
+      }
+    }
+  } else {
+    if (!requireAuth) {
+      return next()
+    } else {
+      store.dispatch('logout')
+      return next({
+        name: 'signIn',
+        query: {redirect: to.fullPath}
+      })
+    }
   }
-
-  if (!getToken()) {
-    store.dispatch('logout')
-    return next({
-      name: 'signIn',
-      query: {redirect: to.fullPath}
-    })
-  }
-
-  next()
 })
 
 // When each route is finished evaluating...

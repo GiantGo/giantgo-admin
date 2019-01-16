@@ -1,3 +1,4 @@
+import { routes } from '@/router'
 import { signIn, signUp, getMyInfo } from '@/api/user'
 import { setToken, removeToken } from '@/utils/token'
 import { isString, isArray } from '@/utils'
@@ -24,7 +25,8 @@ const state = {
   email: '',
   avatar: '',
   roles: [],
-  permissions: []
+  permissions: [],
+  menus: []
 }
 
 const getters = {
@@ -32,6 +34,7 @@ const getters = {
   avatar: state => state.avatar,
   roles: state => state.roles,
   permissions: state => state.permissions,
+  menus: state => state.menus,
   hasRole: state => required => hasRole(state.roles, required),
   hasPermission: state => required => hasPermission(state.permissions, required)
 }
@@ -62,6 +65,7 @@ const actions = {
       commit('setAvatar', userInfo.avatar)
       commit('setRoles', userInfo.roles)
       commit('setPermissions', userInfo.permissions)
+      commit('setMenus', userInfo.roles)
     })
   }
 }
@@ -78,6 +82,9 @@ const mutations = {
   },
   setPermissions (state, permissions) {
     state.permissions = permissions
+  },
+  setMenus (state, roles) {
+    state.menus = routes
   }
 }
 

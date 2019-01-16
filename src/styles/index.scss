@@ -2,6 +2,7 @@
 @import 'mixin';
 @import 'transition';
 @import 'element-ui';
+@import 'sidebar';
 @import 'btn';
 
 html {
@@ -18,6 +19,10 @@ body {
 }
 
 html, body {
+  height: 100%;
+}
+
+#app {
   height: 100%;
 }
 
