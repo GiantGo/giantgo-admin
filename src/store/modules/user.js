@@ -1,5 +1,24 @@
 import { signIn, signUp, getMyInfo } from '@/api/user'
 import { setToken, removeToken } from '@/utils/token'
+import { isString, isArray } from '@/utils'
+
+function hasRole (roles, required) {
+  return roles.some(role => required.includes(role))
+}
+
+function hasPermission (permissions, required) {
+  if (isString(required)) {
+    required = [[required]]
+  } else if (isArray(required) && required.every(isString)) {
+    required = [required]
+  }
+
+  return required.some((required) => {
+    return required.every((permission) => {
+      return permissions.indexOf(permission) !== -1
+    })
+  })
+}
 
 const state = {
   email: '',
@@ -12,7 +31,9 @@ const getters = {
   email: state => state.email,
   avatar: state => state.avatar,
   roles: state => state.roles,
-  permissions: state => state.permissions
+  permissions: state => state.permissions,
+  hasRole: state => required => hasRole(state.roles, required),
+  hasPermission: state => required => hasPermission(state.permissions, required)
 }
 
 const actions = {

@@ -7,7 +7,9 @@ import '@/styles/index.scss'
 import router from './router'
 import store from './store'
 import App from './App.vue'
+
 import './errorLog' // error log
+import './icons' // icon
 
 Vue.use(Element)
 Vue.use(moment)
