@@ -21,6 +21,36 @@ function hasPermission (permissions, required) {
   })
 }
 
+function checkRoute (roles, route) {
+  if (route.meta && route.meta.roles) {
+    return roles.some(role => route.meta.roles.includes(role))
+  } else {
+    return true
+  }
+}
+
+/**
+ * 递归过滤异步路由表，返回符合用户角色权限的路由表
+ * @param routes asyncRouterMap
+ * @param roles
+ */
+function filterAsyncRouter (routes, roles) {
+  const res = []
+
+  routes.forEach(route => {
+    const tmp = {...route}
+    if (checkRoute(roles, tmp)) {
+      if (tmp.children) {
+        tmp.children = filterAsyncRouter(tmp.children, roles)
+      }
+
+      res.push(tmp)
+    }
+  })
+
+  return res
+}
+
 const state = {
   email: '',
   avatar: '',
@@ -51,40 +81,40 @@ const actions = {
     })
   },
   logout ({commit}) {
-    commit('setEmail', '')
-    commit('setAvatar', '')
-    commit('setRoles', '')
-    commit('setPermissions', '')
+    commit('SET_EMAIL', '')
+    commit('SET_AVATAR', '')
+    commit('SET_ROLES', '')
+    commit('SET_PERMISSIONS', '')
     removeToken()
   },
   getMyInfo ({commit}) {
     return getMyInfo().then((response) => {
       let userInfo = response.data
 
-      commit('setEmail', userInfo.email)
-      commit('setAvatar', userInfo.avatar)
-      commit('setRoles', userInfo.roles)
-      commit('setPermissions', userInfo.permissions)
-      commit('setMenus', userInfo.roles)
+      commit('SET_EMAIL', userInfo.email)
+      commit('SET_AVATAR', userInfo.avatar)
+      commit('SET_ROLES', userInfo.roles)
+      commit('SET_PERMISSIONS', userInfo.permissions)
+      commit('SET_MENUS', userInfo.roles)
     })
   }
 }
 
 const mutations = {
-  setEmail (state, email) {
+  SET_EMAIL (state, email) {
     state.email = email
   },
-  setAvatar (state, avatar) {
+  SET_AVATAR (state, avatar) {
     state.avatar = avatar
   },
-  setRoles (state, roles) {
+  SET_ROLES (state, roles) {
     state.roles = roles
   },
-  setPermissions (state, permissions) {
+  SET_PERMISSIONS (state, permissions) {
     state.permissions = permissions
   },
-  setMenus (state, roles) {
-    state.menus = routes
+  SET_MENUS (state, roles) {
+    state.menus = filterAsyncRouter(routes, roles)
   }
 }
 

@@ -18,6 +18,7 @@ export const routes = [
     path: '/signIn',
     name: 'signIn',
     component: SignIn,
+    hidden: true,
     meta: {
       authorization: false
     }
@@ -32,16 +33,14 @@ export const routes = [
         name: 'Dashboard',
         meta: {
           authorization: true,
-          title: 'dashboard',
+          title: 'Dashboard',
           icon: 'dashboard',
           noCache: true
         }
       }
     ]
-  }, {
-    path: '*',
-    component: SignIn
-  }
+  },
+  {path: '*', redirect: '/dashboard', hidden: true}
 ]
 
 const router = new Router({
