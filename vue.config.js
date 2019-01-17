@@ -30,7 +30,12 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:4000/',
+        target: 'http://localhost/',
+        ws: true,
+        changeOrigin: true
+      },
+      '/socketio': {
+        target: 'http://localhost/',
         ws: true,
         changeOrigin: true
       }
@@ -38,7 +43,7 @@ module.exports = {
   },
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {
-      config.output.publicPath = 'https://cdn.runighcat.com/'
+      // config.output.publicPath = 'https://cdn.runighcat.com/'
     } else {
       // mutate for development...
     }

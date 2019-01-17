@@ -6,6 +6,7 @@ import app from './modules/app'
 import errorLog from './modules/errorLog'
 import tagsView from './modules/tagsView'
 import user from './modules/user'
+import socket from './modules/socket'
 
 Vue.use(Vuex)
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     app,
     errorLog,
     tagsView,
-    user
+    user,
+    socket
   }
 })

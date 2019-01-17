@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard-container">
-        dashboard
+        <img alt="stream" :src="imgSrc"/>
     </div>
 </template>
 
@@ -17,7 +17,8 @@
     },
     computed: {
       ...mapGetters([
-        'roles'
+        'roles',
+        'imgSrc'
       ])
     },
     created () {
