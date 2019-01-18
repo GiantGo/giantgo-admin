@@ -1,7 +1,7 @@
 <template>
-    <transition name="fade" mode="out-in">
-        <router-view></router-view>
-    </transition>
+    <div id="app">
+        <router-view/>
+    </div>
 </template>
 
 <script>
@@ -12,10 +12,3 @@
     }
   }
 </script>
-
-<style lang="scss">
-    @import '~normalize.css/normalize.css';
-    @import '~nprogress/nprogress.css';
-    @import 'styles/index';
-</style>
-
