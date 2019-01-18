@@ -30,12 +30,12 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost/',
+        target: process.env.VUE_APP_PROXY_TARGET,
         ws: true,
         changeOrigin: true
       },
       '/socketio': {
-        target: 'http://localhost/',
+        target: process.env.VUE_APP_PROXY_TARGET,
         ws: true,
         changeOrigin: true
       }

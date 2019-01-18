@@ -7,7 +7,7 @@ import { getToken } from '@/utils/token'
 
 NProgress.configure({showSpinner: false})// NProgress Configuration
 
-const DefaultLayout = () => import(/* webpackChunkName: "passports" */ '../layouts/Default/Index.vue')
+const DefaultLayout = () => import('../layouts/Default/Index.vue')
 const SignIn = () => import(/* webpackChunkName: "passports" */ '../views/Passport/SignIn.vue')
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard/Index.vue')
 
