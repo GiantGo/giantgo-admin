@@ -7,6 +7,7 @@ import { getToken } from '@/utils/token'
 
 NProgress.configure({showSpinner: false})// NProgress Configuration
 
+const Redirect = () => import('../views/Redirect/Index.vue')
 const DefaultLayout = () => import('../layouts/Default/Index.vue')
 const SignIn = () => import(/* webpackChunkName: "passports" */ '../views/Passport/SignIn.vue')
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard/Index.vue')
@@ -15,6 +16,16 @@ Vue.use(Router)
 
 export const routes = [
   {
+    path: '/redirect',
+    component: DefaultLayout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*',
+        component: Redirect
+      }
+    ]
+  }, {
     path: '/signIn',
     name: 'signIn',
     component: SignIn,

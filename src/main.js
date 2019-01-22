@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Cookies from 'js-cookie'
 import moment from 'vue-moment'
 import Element from 'element-ui'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
@@ -13,7 +14,10 @@ import VueSocketIO from 'vue-socket.io'
 import './errorLog' // error log
 import './icons' // icon
 
-Vue.use(Element)
+Vue.use(Element, {
+  size: Cookies.get('size') || 'medium', // set element-ui default size
+  zIndex: 3000
+})
 Vue.use(moment)
 Vue.use(new VueSocketIO({
   debug: false,
