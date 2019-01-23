@@ -1,10 +1,10 @@
 <template>
   <div class="tags-view-container">
     <div class="btn-con left-btn">
-      <el-button size="small" icon="el-icon-arrow-left" @click="handleScroll(240)"></el-button>
+      <el-button size="small" icon="el-icon-arrow-left" @click="handleScroll(-240)"></el-button>
     </div>
     <div class="btn-con right-btn">
-      <el-button size="small" icon="el-icon-arrow-right" @click="handleScroll(-240)"></el-button>
+      <el-button size="small" icon="el-icon-arrow-right" @click="handleScroll(240)"></el-button>
     </div>
     <scroll-pane ref="scrollPane" class="tags-view-wrapper">
       <router-link
@@ -21,7 +21,7 @@
         <span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"></span>
       </router-link>
     </scroll-pane>
-    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+    <ul v-show="visible" :style="{left: left + 'px', top: top + 'px'}" class="contextmenu">
       <li @click="refreshSelectedTag(selectedTag)">刷新</li>
       <li @click="closeSelectedTag(selectedTag)">关闭标签页</li>
       <li @click="closeOthersTags">关闭其它标签页</li>
@@ -132,15 +132,15 @@
         const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
         const offsetWidth = this.$el.offsetWidth // container width
         const maxLeft = offsetWidth - menuMinWidth // left boundary
-        const left = e.clientX - offsetLeft + 15 // 15: margin right
+        const left = e.clientX - offsetLeft // 15: margin right
 
         if (left > maxLeft) {
           this.left = maxLeft
         } else {
           this.left = left
         }
-        this.top = e.clientY
 
+        this.top = e.clientY - 20
         this.visible = true
         this.selectedTag = tag
       },

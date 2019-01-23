@@ -11,6 +11,7 @@ const Redirect = () => import('../views/Redirect/Index.vue')
 const DefaultLayout = () => import('../layouts/Default/Index.vue')
 const SignIn = () => import(/* webpackChunkName: "passports" */ '../views/Passport/SignIn.vue')
 const Dashboard = () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard/Index.vue')
+const Icon = () => import('../views/Icon/Index')
 
 Vue.use(Router)
 
@@ -46,6 +47,22 @@ export const routes = [
           authorization: true,
           title: 'Dashboard',
           icon: 'dashboard',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/icon',
+    component: DefaultLayout,
+    children: [
+      {
+        path: 'index',
+        component: Icon,
+        name: 'Icons',
+        meta: {
+          title: 'icons',
+          icon: 'icon',
           noCache: true
         }
       }
