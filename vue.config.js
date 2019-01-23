@@ -1,3 +1,4 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const path = require('path')
 
 function resolve (dir) {
@@ -26,6 +27,12 @@ module.exports = {
       .options({
         symbolId: 'icon-[name]'
       })
+
+    if (process.env.NODE_ENV === 'production') {
+      config.plugin('webpack-report').use(BundleAnalyzerPlugin, [{
+        // ...webpack-bundle-analyzer options here
+      }])
+    }
   },
   devServer: {
     proxy: {
