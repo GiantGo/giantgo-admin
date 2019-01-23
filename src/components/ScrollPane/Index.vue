@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar ref="scrollContainer" :vertical="false" class="scroll-container" @wheel.native.prevent="handleScroll">
+  <el-scrollbar ref="scrollContainer" :vertical="false" class="scroll-container" @wheel.native.prevent="handleMouseScroll">
     <slot/>
   </el-scrollbar>
 </template>
@@ -15,10 +15,13 @@
       }
     },
     methods: {
-      handleScroll (e) {
+      handleMouseScroll (e) {
         const eventDelta = e.wheelDelta || -e.deltaY * 40
+        this.handleScroll(eventDelta / 4)
+      },
+      handleScroll (offset) {
         const $scrollWrapper = this.$refs.scrollContainer.$refs.wrap
-        $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4
+        $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + offset
       },
       moveToTarget (currentTag) {
         const $container = this.$refs.scrollContainer.$el

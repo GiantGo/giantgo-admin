@@ -1,5 +1,11 @@
 <template>
   <div class="tags-view-container">
+    <div class="btn-con left-btn">
+      <el-button size="small" icon="el-icon-arrow-left" @click="handleScroll(240)"></el-button>
+    </div>
+    <div class="btn-con right-btn">
+      <el-button size="small" icon="el-icon-arrow-right" @click="handleScroll(-240)"></el-button>
+    </div>
     <scroll-pane ref="scrollPane" class="tags-view-wrapper">
       <router-link
         v-for="tag in visitedViews"
@@ -12,7 +18,7 @@
         @click.middle.native="closeSelectedTag(tag)"
         @contextmenu.prevent.native="openMenu(tag, $event)">
         {{ tag.title }}
-        <span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"/>
+        <span class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"></span>
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
@@ -68,6 +74,9 @@
           this.$store.dispatch('addView', this.$route)
         }
         return false
+      },
+      handleScroll (offset) {
+        this.$refs.scrollPane.handleScroll(offset)
       },
       moveToCurrentTag () {
         const tags = this.$refs.tag
@@ -144,11 +153,33 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .tags-view-container {
+    position: relative;
     height: 34px;
     width: 100%;
     background: #fff;
     border-bottom: 1px solid #d8dce5;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+
+    .btn-con {
+      position: absolute;
+      top: 0px;
+      height: 100%;
+      background: #fff;
+      padding-top: 3px;
+      z-index: 10;
+      button {
+        padding: 6px 4px;
+        line-height: 14px;
+        text-align: center;
+      }
+      &.left-btn {
+        left: 0;
+      }
+      &.right-btn {
+        right: 0;
+        border-right: 1px solid #F0F0F0;
+      }
+    }
     .tags-view-wrapper {
       .tags-view-item {
         display: inline-block;
@@ -164,10 +195,10 @@
         margin-left: 5px;
         margin-top: 4px;
         &:first-of-type {
-          margin-left: 15px;
+          margin-left: 25px;
         }
         &:last-of-type {
-          margin-right: 15px;
+          margin-right: 25px;
         }
         &.active {
           background-color: #42b983;
