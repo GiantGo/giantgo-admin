@@ -45,7 +45,7 @@ export const routes = [
         name: 'Dashboard',
         meta: {
           authorization: true,
-          title: 'Dashboard',
+          title: '首页',
           icon: 'dashboard',
           noCache: true
         }
@@ -61,7 +61,7 @@ export const routes = [
         component: Icon,
         name: 'Icons',
         meta: {
-          title: 'icons',
+          title: '图标',
           icon: 'icon',
           noCache: true
         }

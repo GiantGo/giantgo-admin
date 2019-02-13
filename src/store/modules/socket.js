@@ -14,7 +14,7 @@ const actions = {
 
 const mutations = {
   SET_IMG_SRC: (state, data) => {
-    state.imgSrc = 'data:image/jpeg;base64,' + data
+    state.imgSrc = data
   }
 }
 
