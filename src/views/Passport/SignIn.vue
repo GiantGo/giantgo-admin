@@ -52,12 +52,7 @@
               password: this.passportForm.password
             }).then(() => {
               let redirectUrl = this.$route.query.redirect
-
-              if (redirectUrl) {
-                this.$router.push({path: redirectUrl})
-              } else {
-                this.$router.push({name: 'dashboard'})
-              }
+              this.$router.push({path: redirectUrl || '/'})
             }).catch(({response}) => {
               this.passportForm.isSubmitting = false
               this.$message.warning(response.data.desc)
@@ -68,7 +63,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .passport-form {
     position: absolute;
     width: 350px;

@@ -1,4 +1,4 @@
-import { routes } from '@/router'
+import { routes, defaultRoute, moduleRoutes } from '@/router'
 import { signIn, signUp, getMyInfo } from '@/api/user'
 import { setToken, removeToken } from '@/utils/token'
 import { isString, isArray } from '@/utils'
@@ -34,14 +34,14 @@ function checkRoute (roles, route) {
  * @param routes asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter (routes, roles) {
+function filterRoleRouter (routes, roles) {
   const res = []
 
   routes.forEach(route => {
     const tmp = {...route}
     if (checkRoute(roles, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRouter(tmp.children, roles)
+        tmp.children = filterRoleRouter(tmp.children, roles)
       }
 
       res.push(tmp)
@@ -66,7 +66,8 @@ const getters = {
   permissions: state => state.permissions,
   menus: state => state.menus,
   hasRole: state => required => hasRole(state.roles, required),
-  hasPermission: state => required => hasPermission(state.permissions, required)
+  hasPermission: state => required => hasPermission(state.permissions, required),
+  checkRoute: state => route => checkRoute(state.roles, route)
 }
 
 const actions = {
@@ -95,7 +96,30 @@ const actions = {
       commit('SET_AVATAR', userInfo.avatar)
       commit('SET_ROLES', userInfo.roles)
       commit('SET_PERMISSIONS', userInfo.permissions)
-      commit('SET_MENUS', userInfo.roles)
+
+      return userInfo
+    })
+  },
+  generateRoutes ({commit}, {roles, pathName}) {
+    // 根据roles权限生成可访问的路由表， 支持根据window.location.pathname区分模块
+    return new Promise(resolve => {
+      const moduleName = pathName.replace(/\//g, '')
+      let accessedRouters
+
+      // 根据模块路径过滤路由表
+      if (moduleName) {
+        accessedRouters = moduleRoutes.filter(route => {
+          return route.path.indexOf(moduleName) > -1
+        }).concat(defaultRoute)
+      } else {
+        accessedRouters = moduleRoutes.concat(defaultRoute)
+      }
+
+      // 根据角色过滤路由表
+      accessedRouters = filterRoleRouter(accessedRouters, roles)
+
+      commit('SET_MENUS', accessedRouters)
+      resolve(accessedRouters)
     })
   }
 }
@@ -113,8 +137,8 @@ const mutations = {
   SET_PERMISSIONS (state, permissions) {
     state.permissions = permissions
   },
-  SET_MENUS (state, roles) {
-    state.menus = filterAsyncRouter(routes, roles)
+  SET_MENUS (state, menus) {
+    state.menus = routes.concat(menus)
   }
 }
 
