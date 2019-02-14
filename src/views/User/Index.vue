@@ -1,24 +1,50 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit"
+                 @click="addUser">添加
+      </el-button>
+    </div>
     <el-table
-      :data="tableData"
+      :data="userList.items"
       border
       style="width: 100%">
-      <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
-      </el-table-column>
       <el-table-column
         prop="name"
         label="姓名"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        prop="email"
+        label="邮箱"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="mobile"
+        label="手机">
       </el-table-column>
     </el-table>
+    <div class="pagination-container">
+      <el-pagination
+        background
+        @size-change="getUserList"
+        @current-change="getUserList"
+        :current-page.sync="userList.pager.page"
+        :page-sizes="[5, 10, 20, 30, 40]"
+        :page-size.sync="userList.pager.limit"
+        layout="total, sizes, prev, pager, next"
+        :total="userList.pager.total">
+      </el-pagination>
+    </div>
+    <el-dialog :title="userDialog.title" width="500px" :visible.sync="userDialog.isShow" :close-on-click-modal="false">
+      <el-form ref="userForm" :model="userForm" :inline="true">
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeUserDialog">取 消</el-button>
+        <el-button type="primary" @click="saveUser">确 定</el-button>
+      </div>
+    </el-dialog>
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="300" :back-position="50" transition-name="fade"></back-to-top>
     </el-tooltip>
@@ -27,7 +53,6 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import clipboard from '@/utils/clipboard'
   import BackToTop from '@/components/BackToTop/Index'
 
   export default {
@@ -37,32 +62,86 @@
     },
     data () {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        userDialog: {
+          isShow: false,
+          title: ''
+        },
+        userForm: {
+          id: '',
+          name: '',
+          isSubmitting: false
+        },
+        userRule: {
+          name: [
+            {required: true, message: '请输入姓名', trigger: 'change'}
+          ]
+        },
+        userList: {
+          items: [],
+          pager: {
+            page: 1,
+            limit: 5,
+            total: 0
+          }
+        }
       }
     },
     computed: {
       ...mapGetters([])
     },
     methods: {
-      handleCopy (text, event) {
-        clipboard(text, event)
+      getUserList () {
+        this.$store.dispatch('getUserList', {
+          page: this.userList.pager.page,
+          limit: this.userList.pager.limit
+        }).then(res => {
+          this.userList.items = res.data.rows
+          this.userList.pager.total = res.data.count
+        }).catch(() => {
+          this.$message.error('获取用户失败')
+        })
+      },
+      addUser () {
+        this.userDialog.isShow = true
+        this.userForm.id = ''
+        this.userForm.name = ''
+        this.$nextTick(() => {
+          this.$refs.userForm.clearValidate()
+        })
+      },
+      editUser (user) {
+        this.userDialog.isShow = true
+        this.userForm.id = user.id
+        this.userForm.name = user.name
+        if (this.$refs.userForm) {
+          this.$refs.userForm.clearValidate()
+        }
+      },
+      closeUserDialog () {
+        this.userDialog.isShow = false
+      },
+      saveUser () {
+        this.$refs.userForm.validate((valid) => {
+          if (valid) {
+            this.userForm.isSubmitting = true
+
+            this.$store.dispatch('signIn', {
+              id: this.userForm.id,
+              name: this.userForm.name
+            }).then(() => {
+              this.userForm.isSubmitting = false
+              this.userDialog.isShow = false
+              this.getUserList()
+            }).catch(() => {
+              this.userForm.isSubmitting = false
+              this.$message.error('保存失败')
+            })
+          }
+        })
       }
+    },
+    mounted () {
+      this.getUserList()
     }
   }
 </script>

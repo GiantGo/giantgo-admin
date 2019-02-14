@@ -118,3 +118,11 @@
 .el-table--enable-row-hover .el-table__body tr:hover > td {
   background: #f9f9f9;
 }
+
+.pagination-container {
+  background: #fff;
+}
+
+.pagination-container.hidden {
+  display: none;
+}
