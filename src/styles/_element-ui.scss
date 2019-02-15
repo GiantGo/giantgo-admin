@@ -28,13 +28,6 @@
   }
 }
 
-.fixed-width {
-  .el-button--mini {
-    padding: 7px 10px;
-    width: 60px;
-  }
-}
-
 .status-col {
   .cell {
     padding: 0 10px;
@@ -86,14 +79,12 @@
 
 //ele table
 .el-table {
-  //border-color: #D0E1FF;
   border-color: #ecf3ff;
 }
 
 .el-table--border::after,
 .el-table--group::after,
 .el-table::before {
-  //background-color:#D0E1FF;
   background-color: #ecf3ff;
 }
 
@@ -103,7 +94,7 @@
 }
 
 .el-table th {
-  background: #F6F8F8;
+  background: #f2f7fb;
 }
 
 .el-table th > .cell {
