@@ -14,7 +14,8 @@
   import AppMain from './components/AppMain'
   import NavBar from './components/NavBar'
   import TagsView from './components/TagsView'
-  import Sidebar from './components/Sidebar/Index'
+  // import Sidebar from './components/RouterSidebar/Index'
+  import Sidebar from './components/DynamicSidebar/Index'
   import ResizeMixin from '@/mixins/ResizeHandler'
 
   export default {

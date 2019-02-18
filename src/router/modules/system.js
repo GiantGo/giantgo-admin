@@ -6,11 +6,15 @@ const Role = () => import(/* webpackChunkName: "system" */ '../../views/Role/Ind
 
 const systemRouter = [
   {
-    path: '/system/user',
+    path: '/system',
     component: DefaultLayout,
+    meta: {
+      title: '系统设置',
+      icon: 'chart'
+    },
     children: [
       {
-        path: '',
+        path: 'user',
         component: User,
         name: 'User',
         meta: {
@@ -18,18 +22,12 @@ const systemRouter = [
           icon: 'peoples',
           roles: ['admin'] // you can set roles in root nav
         }
-      }
-    ]
-  }, {
-    path: '/system/role',
-    component: DefaultLayout,
-    children: [
-      {
-        path: '',
+      }, {
+        path: 'role',
         component: Role,
         name: 'Role',
         meta: {
-          title: '角色',
+          title: '角色管理',
           icon: 'user',
           roles: ['admin'] // you can set roles in root nav
         }

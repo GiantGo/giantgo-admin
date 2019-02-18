@@ -30,7 +30,7 @@
       <el-table-column
         label="最后登录时间">
         <template slot-scope="scope">
-          {{scope.row.lastSignInAt | moment('YYYY-MM-DD HH:mm:ss')}}
+          {{formatTime(scope.row.lastSignInAt)}}
         </template>
       </el-table-column>
       <el-table-column
@@ -98,6 +98,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import BackToTop from '@/components/BackToTop/Index'
+  import { formatTime } from '@/utils'
 
   export default {
     name: 'Dashboard',
@@ -139,6 +140,7 @@
       ...mapGetters([])
     },
     methods: {
+      formatTime,
       getUserList () {
         this.$store.dispatch('getUserList', {
           page: this.userList.pager.page,

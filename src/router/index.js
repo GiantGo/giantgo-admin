@@ -42,7 +42,7 @@ export const routes = [
     path: '',
     component: DefaultLayout,
     redirect: 'dashboard',
-    hidden: true,
+    hidden: false,
     children: [
       {
         path: 'dashboard',

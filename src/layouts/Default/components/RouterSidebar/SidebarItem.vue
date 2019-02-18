@@ -37,12 +37,12 @@
   import { isExternal } from '@/utils'
   import Item from './Item'
   import AppLink from './Link'
-  import FixiOSBug from './FixiOSBug'
+  import FixIOSBug from '@/mixins/FixIOSBug'
 
   export default {
     name: 'SidebarItem',
     components: {Item, AppLink},
-    mixins: [FixiOSBug],
+    mixins: [FixIOSBug],
     props: {
       // route object
       item: {
