@@ -19,8 +19,7 @@ const systemRouter = [
         name: 'User',
         meta: {
           title: '用户管理',
-          icon: 'peoples',
-          roles: ['admin'] // you can set roles in root nav
+          icon: 'peoples'
         }
       }, {
         path: 'role',
@@ -28,8 +27,7 @@ const systemRouter = [
         name: 'Role',
         meta: {
           title: '角色管理',
-          icon: 'user',
-          roles: ['admin'] // you can set roles in root nav
+          icon: 'user'
         }
       }
     ]

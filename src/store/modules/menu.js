@@ -1,4 +1,4 @@
-import { checkRoute } from '@/utils/route'
+import { checkRoleRoute, checkPermissionRoute } from '@/utils/route'
 import { routes, defaultRoute, moduleRoutes } from '@/router'
 import { getMenuList } from '@/api/menu'
 
@@ -6,15 +6,16 @@ import { getMenuList } from '@/api/menu'
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
  * @param routes asyncRouterMap
  * @param roles
+ * @param permissions
  */
-function filterRoleRouter (routes, roles) {
+function filterRouter (routes, roles, permissions) {
   const res = []
 
   routes.forEach(route => {
     const tmp = {...route}
-    if (checkRoute(roles, tmp)) {
+    if (checkRoleRoute(roles, tmp) && checkPermissionRoute(permissions, tmp)) {
       if (tmp.children) {
-        tmp.children = filterRoleRouter(tmp.children, roles)
+        tmp.children = filterRouter(tmp.children, roles, permissions)
       }
 
       res.push(tmp)
@@ -29,7 +30,7 @@ function formatMenus (menus) {
 
   menus.forEach(menu => {
     const tmp = {
-      path: menu.path,
+      path: menu.path || '',
       meta: {
         title: menu.title,
         icon: menu.icon
@@ -56,8 +57,8 @@ const getters = {
 }
 
 const actions = {
-  generateRouterMenus ({commit}, {roles, pathName}) {
-    // 根据roles权限生成可访问的路由表， 支持根据window.location.pathname区分模块
+  generateRouterMenus ({commit}, {roles, permissions, pathName}) {
+    // 根据角色和权限生成可访问的路由表， 支持根据window.location.pathname区分模块
     return new Promise(resolve => {
       const moduleName = pathName
       let accessedRouters
@@ -71,8 +72,8 @@ const actions = {
         accessedRouters = moduleRoutes.concat(defaultRoute)
       }
 
-      // 根据角色过滤路由表
-      accessedRouters = filterRoleRouter(accessedRouters, roles)
+      // 根据角色和权限过滤路由表
+      accessedRouters = filterRouter(accessedRouters, roles, permissions)
 
       commit('SET_MENUS', routes.concat(accessedRouters))
       resolve(accessedRouters)

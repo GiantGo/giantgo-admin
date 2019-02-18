@@ -4,7 +4,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css'// progress bar style
 import store from '@/store'
 import { getToken } from '@/utils/token'
-import { checkRoute } from '@/utils/route'
+import { checkRoleRoute, checkPermissionRoute } from '@/utils/route'
 import systemRouter from './modules/system'
 
 NProgress.configure({showSpinner: false})// NProgress Configuration
@@ -102,10 +102,10 @@ router.beforeEach(function (to, from, next) {
       // 判断当前用户是否已拉取完user_info信息
       if (store.getters.roles.length === 0) {
         // 拉取user_info
-        store.dispatch('getMyInfo').then(res => {
-          const roles = res.roles // note: roles must be a array! such as: ['editor','develop']
+        store.dispatch('getMyInfo').then(myInfo => {
           store.dispatch('generateDynamicMenus', {
-            roles: roles,
+            roles: myInfo.roles,
+            permissions: myInfo.permissions,
             pathName: window.location.pathname.replace(/\//g, '')
           }).then(routes => {
             router.addRoutes(routes) // 动态添加可访问路由表
@@ -119,7 +119,8 @@ router.beforeEach(function (to, from, next) {
           })
         })
       } else {
-        if (checkRoute(store.getters.roles, to)) {
+        // 验证路由角色和权限
+        if (checkRoleRoute(store.getters.roles, to) && checkPermissionRoute(store.getters.permissions, to)) {
           next()
         } else {
           next({path: '/401', replace: true, query: {noGoBack: true}})

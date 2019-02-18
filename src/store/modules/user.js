@@ -56,14 +56,14 @@ const actions = {
   },
   getMyInfo ({commit}) {
     return getMyInfo().then((response) => {
-      let userInfo = response.data
+      let myInfo = response.data
 
-      commit('SET_EMAIL', userInfo.email)
-      commit('SET_AVATAR', userInfo.avatar)
-      commit('SET_ROLES', userInfo.roles)
-      commit('SET_PERMISSIONS', userInfo.permissions)
+      commit('SET_EMAIL', myInfo.email)
+      commit('SET_AVATAR', myInfo.avatar)
+      commit('SET_ROLES', myInfo.roles)
+      commit('SET_PERMISSIONS', myInfo.permissions)
 
-      return userInfo
+      return myInfo
     })
   },
   getUserList ({commit}, {page, limit}) {
