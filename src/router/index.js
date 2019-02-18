@@ -4,6 +4,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css'// progress bar style
 import store from '@/store'
 import { getToken } from '@/utils/token'
+import { checkRoute } from '@/utils/route'
 import systemRouter from './modules/system'
 
 NProgress.configure({showSpinner: false})// NProgress Configuration
@@ -103,7 +104,10 @@ router.beforeEach(function (to, from, next) {
         // 拉取user_info
         store.dispatch('getMyInfo').then(res => {
           const roles = res.roles // note: roles must be a array! such as: ['editor','develop']
-          store.dispatch('generateRoutes', {roles, pathName: window.location.pathname}).then(routes => {
+          store.dispatch('generateDynamicMenus', {
+            roles: roles,
+            pathName: window.location.pathname.replace(/\//g, '')
+          }).then(routes => {
             router.addRoutes(routes) // 动态添加可访问路由表
             next({...to, replace: true}) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
@@ -115,8 +119,7 @@ router.beforeEach(function (to, from, next) {
           })
         })
       } else {
-        // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-        if (store.getters.checkRoute(to)) {
+        if (checkRoute(store.getters.roles, to)) {
           next()
         } else {
           next({path: '/401', replace: true, query: {noGoBack: true}})
