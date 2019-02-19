@@ -3,11 +3,13 @@
 const DefaultLayout = () => import('../../layouts/Default/Index.vue')
 const User = () => import(/* webpackChunkName: "system" */ '../../views/User/Index.vue')
 const Role = () => import(/* webpackChunkName: "system" */ '../../views/Role/Index.vue')
+const Menu = () => import(/* webpackChunkName: "system" */ '../../views/Menu/Index.vue')
 
 const systemRouter = [
   {
     path: '/system',
     component: DefaultLayout,
+    redirect: '/system/user',
     meta: {
       title: '系统设置',
       icon: 'chart'
@@ -19,7 +21,8 @@ const systemRouter = [
         name: 'User',
         meta: {
           title: '用户管理',
-          icon: 'peoples'
+          icon: 'peoples',
+          permissions: ['user:read']
         }
       }, {
         path: 'role',
@@ -27,7 +30,17 @@ const systemRouter = [
         name: 'Role',
         meta: {
           title: '角色管理',
-          icon: 'user'
+          icon: 'user',
+          permissions: ['role:read']
+        }
+      }, {
+        path: 'menu',
+        component: Menu,
+        name: 'Menu',
+        meta: {
+          title: '菜单管理',
+          icon: 'user',
+          permissions: ['menu:write']
         }
       }
     ]

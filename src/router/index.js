@@ -35,6 +35,14 @@ export const routes = [
       }
     ]
   }, {
+    path: '/404',
+    component: () => import('../views/ErrorPage/404'),
+    hidden: true
+  }, {
+    path: '/401',
+    component: () => import('../views/ErrorPage/401'),
+    hidden: true
+  }, {
     path: '/signIn',
     name: 'signIn',
     component: SignIn,
@@ -57,16 +65,9 @@ export const routes = [
       }
     ]
   }, {
-    path: '/404',
-    component: () => import('../views/ErrorPage/404'),
-    hidden: true
-  }, {
-    path: '/401',
-    component: () => import('../views/ErrorPage/401'),
-    hidden: true
-  }, {
     path: '/icon',
     component: DefaultLayout,
+    hidden: false,
     children: [
       {
         path: 'index',

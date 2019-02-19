@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit"
-                 @click="addUser">添加
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addUser">
+        添加
       </el-button>
     </div>
     <el-table
@@ -63,7 +63,7 @@
       </el-pagination>
     </div>
     <el-dialog :title="userDialog.title" :visible.sync="userDialog.isShow" :close-on-click-modal="false">
-      <el-form ref="userForm" :model="userForm" :rules="userRule" label-position="left" label-width="70px"
+      <el-form ref="userForm" :model="userForm" :rules="userRule" label-position="left" label-width="120px"
                style="width: 400px; margin-left:50px;">
         <el-form-item label="姓名" prop="name">
           <el-input v-model="userForm.name"></el-input>

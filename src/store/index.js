@@ -7,6 +7,7 @@ import tagsView from './modules/tagsView'
 import user from './modules/user'
 import socket from './modules/socket'
 import menu from './modules/menu'
+import role from './modules/role'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     tagsView,
     user,
     socket,
-    menu
+    menu,
+    role
   }
 })

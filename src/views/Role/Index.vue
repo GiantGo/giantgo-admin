@@ -1,24 +1,66 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addRole">
+        添加
+      </el-button>
+    </div>
     <el-table
-      :data="tableData"
+      :data="roleList.items"
+      v-loading="roleList.loading"
       border
       style="width: 100%">
       <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
-      </el-table-column>
-      <el-table-column
         prop="name"
-        label="姓名"
+        label="编码"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        prop="displayName"
+        label="显示名称"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="description"
+        label="描述">
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding">
+        <template slot-scope="scope">
+          <el-button type="primary" @click="editRole(scope.row)">编辑</el-button>
+          <el-button type="danger" @click="deleteRole(scope.row)" v-if="!scope.row.isSystem">删除</el-button>
+        </template>
       </el-table-column>
     </el-table>
+    <div class="pagination-container">
+      <el-pagination
+        background
+        @size-change="getRoleList"
+        @current-change="getRoleList"
+        :current-page.sync="roleList.pager.page"
+        :page-sizes="[5, 10, 20, 30, 40]"
+        :page-size.sync="roleList.pager.limit"
+        layout="total, sizes, prev, pager, next"
+        :total="roleList.pager.total">
+      </el-pagination>
+    </div>
+    <el-dialog :title="roleDialog.title" :visible.sync="roleDialog.isShow" :close-on-click-modal="false">
+      <el-form ref="roleForm" :model="roleForm" :rules="roleRule" label-position="left" label-width="120px"
+               style="width: 400px; margin-left:50px;">
+        <el-form-item label="编码" prop="name">
+          <el-input v-model="roleForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="角色名称" prop="displayName">
+          <el-input v-model="roleForm.displayName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="description">
+          <el-input v-model="roleForm.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeRoleDialog">取 消</el-button>
+        <el-button type="primary" @click="saveRole">确 定</el-button>
+      </div>
+    </el-dialog>
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="300" :back-position="50" transition-name="fade"></back-to-top>
     </el-tooltip>
@@ -27,7 +69,6 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import clipboard from '@/utils/clipboard'
   import BackToTop from '@/components/BackToTop/Index'
 
   export default {
@@ -37,32 +78,120 @@
     },
     data () {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        roleDialog: {
+          isShow: false,
+          title: ''
+        },
+        roleForm: {
+          id: '',
+          name: '',
+          displayName: '',
+          description: '',
+          isSubmitting: false
+        },
+        roleRule: {
+          name: [
+            {required: true, message: '请输入编码', trigger: 'change'}
+          ],
+          displayName: [
+            {required: true, message: '请输入角色名称', trigger: 'change'}
+          ]
+        },
+        roleList: {
+          items: [],
+          loading: false,
+          pager: {
+            page: 1,
+            limit: 5,
+            total: 0
+          }
+        }
       }
     },
     computed: {
       ...mapGetters([])
     },
     methods: {
-      handleCopy (text, event) {
-        clipboard(text, event)
+      getRoleList () {
+        this.roleList.loading = true
+        this.$store.dispatch('getRoleList', {
+          page: this.roleList.pager.page,
+          limit: this.roleList.pager.limit
+        }).then(res => {
+          this.roleList.items = res.data.rows
+          this.roleList.pager.total = res.data.count
+          this.roleList.loading = false
+        }).catch(() => {
+          this.$message.error('获取用户失败')
+          this.roleList.loading = false
+        })
+      },
+      addRole () {
+        this.roleDialog.isShow = true
+        this.roleDialog.title = '创建角色'
+        this.roleForm.id = ''
+        this.roleForm.name = ''
+        this.roleForm.displayName = ''
+        this.roleForm.description = ''
+        this.$nextTick(() => {
+          this.$refs.roleForm.clearValidate()
+        })
+      },
+      editRole (role) {
+        this.roleDialog.isShow = true
+        this.roleDialog.title = '编辑角色'
+        this.roleForm.id = role.id
+        this.roleForm.name = role.name
+        this.roleForm.displayName = role.displayName
+        this.roleForm.description = role.description
+        if (this.$refs.roleForm) {
+          this.$refs.roleForm.clearValidate()
+        }
+      },
+      deleteRole (role) {
+        this.$confirm('确定要删除角色信息吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$store.dispatch('deleteRole', {
+            roleId: role.id
+          }).then(() => {
+            this.$message.success('删除成功')
+            this.getRoleList()
+          })
+        }).catch(() => {
+          this.$message.info('已取消')
+        })
+      },
+      closeRoleDialog () {
+        this.roleDialog.isShow = false
+      },
+      saveRole () {
+        this.$refs.roleForm.validate((valid) => {
+          if (valid) {
+            this.roleForm.isSubmitting = true
+
+            this.$store.dispatch(!this.roleForm.id ? 'createRole' : 'updateRole', {
+              id: this.roleForm.id,
+              name: this.roleForm.name,
+              displayName: this.roleForm.displayName,
+              description: this.roleForm.description
+            }).then(() => {
+              this.roleForm.isSubmitting = false
+              this.roleDialog.isShow = false
+              this.getRoleList()
+              this.$message.success('保存成功')
+            }).catch(() => {
+              this.roleForm.isSubmitting = false
+              this.$message.error('保存失败')
+            })
+          }
+        })
       }
+    },
+    mounted () {
+      this.getRoleList()
     }
   }
 </script>

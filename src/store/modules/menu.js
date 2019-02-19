@@ -1,6 +1,6 @@
 import { checkRoleRoute, checkPermissionRoute } from '@/utils/route'
 import { routes, defaultRoute, moduleRoutes } from '@/router'
-import { getMenuList } from '@/api/menu'
+import { getMenuTree, createMenu, updateMenu, deleteMenu } from '@/api/menu'
 
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
@@ -57,6 +57,14 @@ const getters = {
 }
 
 const actions = {
+  /**
+   * 根据路由设置生成菜单
+   * @param commit
+   * @param roles
+   * @param permissions
+   * @param pathName  location路径名称，可用来区分菜单模块
+   * @returns {Promise<any>}
+   */
   generateRouterMenus ({commit}, {roles, permissions, pathName}) {
     // 根据角色和权限生成可访问的路由表， 支持根据window.location.pathname区分模块
     return new Promise(resolve => {
@@ -74,17 +82,40 @@ const actions = {
 
       // 根据角色和权限过滤路由表
       accessedRouters = filterRouter(accessedRouters, roles, permissions)
-
+      // 使用路由作为菜单
       commit('SET_MENUS', routes.concat(accessedRouters))
       resolve(accessedRouters)
     })
   },
-  generateDynamicMenus ({commit}, {pathName}) {
-    return getMenuList(pathName).then(response => {
+  /**
+   * 动态获取系统菜单
+   * @param commit
+   * @param roles
+   * @param permissions
+   * @param pathName  location路径名称，可用来区分菜单模块
+   * @returns {Q.Promise<Array<*>> | Q.Promise<Array<*> | never> | PromiseLike<Array | never> | Promise<Array | never>}
+   */
+  generateDynamicMenus ({commit}, {roles, permissions, pathName}) {
+    return getMenuTree(pathName).then(response => {
       let menus = formatMenus(response.data)
+      let accessedRouters = moduleRoutes.concat(defaultRoute)
+      // 根据角色和权限过滤路由表
+      accessedRouters = filterRouter(accessedRouters, roles, permissions)
       commit('SET_MENUS', menus)
-      return moduleRoutes.concat(defaultRoute)
+      return accessedRouters
     })
+  },
+  getMenuTree () {
+    return getMenuTree()
+  },
+  createMenu ({commit}, menuInfo) {
+    return createMenu(menuInfo)
+  },
+  updateMenu ({commit}, menuInfo) {
+    return updateMenu(menuInfo)
+  },
+  deleteMenu ({commit}, {menuId}) {
+    return deleteMenu(menuId)
   }
 }
 
