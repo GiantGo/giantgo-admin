@@ -37,7 +37,11 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="16" style="padding: 10px;">
         <div class="menu-form">
-          <div class="menu-breadcrumb">
+          <div class="menu-tip" v-show="menuForm.parentId === ''">
+            <svg-icon class-name="drag-icon" icon-class="tip"/>
+            选择要设置的菜单
+          </div>
+          <div class="menu-breadcrumb" v-show="menuForm.parentId !== ''">
             <el-breadcrumb separator="/">
               <el-breadcrumb-item
                 v-for="(item, index) in menuBreadcrumbs"
@@ -46,7 +50,8 @@
               </el-breadcrumb-item>
             </el-breadcrumb>
           </div>
-          <el-form ref="menuForm" :model="menuForm" :rules="menuRule" label-position="left" label-width="120px">
+          <el-form ref="menuForm" :model="menuForm" :rules="menuRule"
+                   label-position="left" label-width="120px" v-show="menuForm.parentId !== ''">
             <el-form-item label="标题" prop="title">
               <el-input v-model="menuForm.title" :disabled="menuForm.id === -1"></el-input>
             </el-form-item>
@@ -59,7 +64,7 @@
             <el-form-item label="权限名称" prop="permissionName">
               <el-input v-model="menuForm.permissionName" :disabled="menuForm.id === -1"></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item v-if="menuForm.id !== -1">
               <el-button type="default" @click="resetMenu">重 置</el-button>
               <el-button type="primary" @click="saveMenu">保 存</el-button>
             </el-form-item>
@@ -84,6 +89,7 @@
         menuBreadcrumbs: [],
         menuForm: {
           id: '',
+          parentId: '',
           title: '',
           icon: '',
           path: '',
@@ -174,6 +180,7 @@
         })
       },
       resetMenu () {
+        this.menuForm.id = ''
         this.$refs.menuForm.resetFields()
       },
       saveMenu () {
@@ -209,15 +216,19 @@
   }
 </script>
 <style rel="stylesheet/scss" lang="scss">
+  @import '../../styles/variables.scss';
+
   .menu-tree {
     padding: 20px;
-    background: #ffffff;
+    background: $white;
     .el-tree-node__content {
       height: 30px;
     }
   }
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
+  @import '../../styles/variables.scss';
+
   .custom-tree-node {
     flex: 1;
     display: flex;
@@ -233,7 +244,16 @@
 
   .menu-form {
     padding: 20px;
-    background: #ffffff;
+    height: 365px;
+    background: $white;
+
+    .menu-tip {
+      position: relative;
+      top: 50%;
+      text-align: center;
+      font-size: 18px;
+      color: $primary-color;
+    }
 
     .menu-breadcrumb {
       margin-bottom: 20px;
