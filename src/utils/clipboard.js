@@ -16,12 +16,14 @@ function clipboardError () {
   })
 }
 
-export default function handleClipboard (text, event) {
+export default function handleClipboard (text, event, showMessage = true) {
   const clipboard = new Clipboard(event.target, {
     text: () => text
   })
   clipboard.on('success', () => {
-    clipboardSuccess()
+    if (showMessage) {
+      clipboardSuccess()
+    }
     clipboard.off('error')
     clipboard.off('success')
     clipboard.destroy()

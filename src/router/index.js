@@ -13,7 +13,6 @@ const Redirect = () => import('../views/Redirect/Index.vue')
 const DefaultLayout = () => import('../layouts/Default/Index.vue')
 const SignIn = () => import('../views/Passport/SignIn.vue')
 const Dashboard = () => import('../views/Dashboard/Index.vue')
-const Icon = () => import('../views/Icon/Index')
 
 Vue.use(Router)
 
@@ -60,22 +59,6 @@ export const routes = [
         meta: {
           title: '首页',
           icon: 'dashboard',
-          noCache: true
-        }
-      }
-    ]
-  }, {
-    path: '/icon',
-    component: DefaultLayout,
-    hidden: false,
-    children: [
-      {
-        path: 'index',
-        component: Icon,
-        name: 'Icons',
-        meta: {
-          title: '图标',
-          icon: 'icon',
           noCache: true
         }
       }

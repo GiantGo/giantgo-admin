@@ -19,7 +19,6 @@ body {
 
 html, body {
   height: 100%;
-  overflow: hidden;
   margin: 0;
   padding: 0;
 }
@@ -134,6 +133,7 @@ div:focus {
 .app-container {
   padding: 20px;
   height: 100%;
+  overflow: auto;
   &.bg-color {
     background-color: #f0f2f5;
   }

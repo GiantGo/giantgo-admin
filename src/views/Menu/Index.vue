@@ -39,7 +39,7 @@
         <div class="menu-form">
           <div class="menu-tip" v-show="menuForm.parentId === ''">
             <svg-icon class-name="drag-icon" icon-class="tip"/>
-            选择要设置的菜单
+            请选择要设置的菜单
           </div>
           <div class="menu-breadcrumb" v-show="menuForm.parentId !== ''">
             <el-breadcrumb separator="/">
@@ -51,12 +51,12 @@
             </el-breadcrumb>
           </div>
           <el-form ref="menuForm" :model="menuForm" :rules="menuRule"
-                   label-position="left" label-width="120px" v-show="menuForm.parentId !== ''">
+                   label-position="left" label-width="100px" v-show="menuForm.parentId !== ''">
             <el-form-item label="标题" prop="title">
               <el-input v-model="menuForm.title" :disabled="menuForm.id === -1"></el-input>
             </el-form-item>
             <el-form-item label="图标" prop="icon">
-              <el-input v-model="menuForm.icon" :disabled="menuForm.id === -1"></el-input>
+              <icon-picker v-model="menuForm.icon" :disabled="menuForm.id === -1"></icon-picker>
             </el-form-item>
             <el-form-item label="路径" prop="path">
               <el-input v-model="menuForm.path" :disabled="menuForm.id === -1"></el-input>
@@ -77,9 +77,13 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import iconPicker from '@/components/Icon/Index'
 
   export default {
     name: 'Menu',
+    components: {
+      iconPicker
+    },
     data () {
       return {
         defaultProps: {
@@ -119,6 +123,7 @@
           this.menus = [{
             id: -1,
             title: '根',
+            icon: '',
             path: '/',
             children: res.data
           }]
