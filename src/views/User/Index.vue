@@ -89,22 +89,16 @@
         <el-button type="primary" @click="saveUser">确 定</el-button>
       </div>
     </el-dialog>
-    <el-tooltip placement="top" content="返回顶部">
-      <back-to-top :visibility-height="300" :back-position="50" transition-name="fade"></back-to-top>
-    </el-tooltip>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import BackToTop from '@/components/BackToTop/Index'
   import { formatTime } from '@/utils'
 
   export default {
-    name: 'Dashboard',
-    components: {
-      BackToTop
-    },
+    name: 'User',
+    components: {},
     data () {
       return {
         userDialog: {

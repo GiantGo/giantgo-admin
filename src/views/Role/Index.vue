@@ -61,21 +61,15 @@
         <el-button type="primary" @click="saveRole">确 定</el-button>
       </div>
     </el-dialog>
-    <el-tooltip placement="top" content="返回顶部">
-      <back-to-top :visibility-height="300" :back-position="50" transition-name="fade"></back-to-top>
-    </el-tooltip>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import BackToTop from '@/components/BackToTop/Index'
 
   export default {
-    name: 'Dashboard',
-    components: {
-      BackToTop
-    },
+    name: 'Role',
+    components: {},
     data () {
       return {
         roleDialog: {

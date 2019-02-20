@@ -133,6 +133,9 @@ div:focus {
 //main-container全局样式
 .app-container {
   padding: 20px;
+  &.bg-color {
+    background-color: #f0f2f5;
+  }
 }
 
 .components-container {

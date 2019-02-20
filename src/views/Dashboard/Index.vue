@@ -1,7 +1,5 @@
 <template>
-  <div class="app-container">
-    <el-input v-model="currentRole" placeholder="Please input" style="width:400px;max-width:100%;"/>
-    <el-button type="primary" icon="document" @click="handleCopy(currentRole, $event)">复制</el-button>
+  <div class="app-container bg-color">
     <el-row :gutter="32">
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
@@ -39,16 +37,12 @@
         label="地址">
       </el-table-column>
     </el-table>
-    <el-tooltip placement="top" content="返回顶部">
-      <back-to-top :visibility-height="300" :back-position="50" transition-name="fade"></back-to-top>
-    </el-tooltip>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import clipboard from '@/utils/clipboard'
-  import BackToTop from '@/components/BackToTop/Index'
   import RadarChart from './components/RadarChart'
   import PieChart from './components/PieChart'
   import BarChart from './components/BarChart'
@@ -56,7 +50,6 @@
   export default {
     name: 'Dashboard',
     components: {
-      BackToTop,
       RadarChart,
       PieChart,
       BarChart
@@ -101,3 +94,10 @@
     }
   }
 </script>
+<style rel="stylesheet/scss" lang="scss" scoped>
+  .chart-wrapper {
+    background: #fff;
+    padding: 16px 16px 0;
+    margin-bottom: 32px;
+  }
+</style>

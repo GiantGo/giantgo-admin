@@ -1,6 +1,6 @@
 import axios from 'axios'
-import router from '../router'
 import { getToken } from '@/utils/token'
+import store from '@/store'
 
 // create an axios instance
 const service = axios.create({
@@ -21,12 +21,13 @@ service.interceptors.request.use(function (config) {
 
 service.interceptors.response.use(function (response) {
   // Do something with response data
-
   return response
 }, function (error) {
   // Do something with response error
   if (error.response.status === 401) {
-    router.app.$router.push({name: 'signIn', query: {redirect: router.app.$route.fullPath}})
+    store.dispatch('logout').then(() => {
+      window.location.reload()
+    })
   }
 
   return Promise.reject(error)
