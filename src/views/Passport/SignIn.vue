@@ -2,7 +2,7 @@
   <el-container class="passport-container">
     <el-main>
       <el-form class="passport-form" ref="passportForm" :model="passportForm" :rules="rules" label-position="left"
-               label-width="0px">
+               label-width="0px" @keyup.enter.native="signIn">
         <h3 class="title">登录</h3>
         <el-form-item prop="userName">
           <el-input type="text" v-model="passportForm.userName" auto-complete="off" placeholder="手机/邮箱"/>
@@ -10,9 +10,10 @@
         <el-form-item prop="password">
           <el-input type="password" v-model="passportForm.password" auto-complete="off" placeholder="密码"/>
         </el-form-item>
-        <el-form-item style="width:100%;">
-          <el-button type="primary" style="width:100%;" @click.native.prevent="signIn"
-                     :loading="passportForm.isSubmitting">
+        <el-form-item>
+          <el-button type="primary" style="width:100%;"
+                     :loading="passportForm.isSubmitting"
+                     @click.native.prevent="signIn">
             登录
           </el-button>
         </el-form-item>

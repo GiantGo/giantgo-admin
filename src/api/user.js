@@ -52,3 +52,11 @@ export function updateUser (userInfo) {
     data: userInfo
   })
 }
+
+export function assignRoles (userId, roles) {
+  return request({
+    url: '/users/' + userId + '/roles',
+    method: 'PUT',
+    data: roles
+  })
+}

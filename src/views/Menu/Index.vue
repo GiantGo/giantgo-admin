@@ -204,9 +204,9 @@
               this.menuForm.isSubmitting = false
               this.getMenuList()
               this.$message.success('保存成功')
-            }).catch(() => {
+            }).catch(({response}) => {
               this.menuForm.isSubmitting = false
-              this.$message.error('保存失败')
+              this.$message.error(response.data.desc)
             })
           }
         })
@@ -245,6 +245,7 @@
 
   .drag-icon {
     margin-right: 5px;
+    cursor: move;
   }
 
   .menu-form {

@@ -8,11 +8,12 @@
     <el-table
       :data="userList.items"
       border
-      style="width: 100%">
+      style="width: 100%"
+      class="user-table">
       <el-table-column
         prop="name"
         label="姓名"
-        width="180">
+        width="100">
       </el-table-column>
       <el-table-column
         prop="email"
@@ -34,8 +35,16 @@
         </template>
       </el-table-column>
       <el-table-column
+        label="角色"
+        width="180"
+        align="center">
+        <template slot-scope="scope">
+          <el-tag v-for="role in scope.row.roles" :key="role.id">{{role.name}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
         label="是否启用"
-        width="100"
+        width="80"
         align="center">
         <template slot-scope="scope">
           <el-switch
@@ -43,9 +52,10 @@
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding">
+      <el-table-column label="操作" align="center" width="320" class-name="small-padding">
         <template slot-scope="scope">
           <el-button type="primary" @click="editUser(scope.row)">编辑</el-button>
+          <el-button type="primary" @click="resetPassword(scope.row)">重置密码</el-button>
           <el-button type="primary" @click="assignRoles(scope.row)">分配角色</el-button>
         </template>
       </el-table-column>
@@ -62,7 +72,7 @@
         :total="userList.pager.total">
       </el-pagination>
     </div>
-    <el-dialog :title="userDialog.title" :visible.sync="userDialog.isShow" :close-on-click-modal="false">
+    <el-dialog :title="userDialog.title" :visible.sync="userDialog.isShow" :close-on-click-modal="false" width="600px">
       <el-form ref="userForm" :model="userForm" :rules="userRule" label-position="left" label-width="120px"
                style="width: 400px; margin-left:50px;">
         <el-form-item label="姓名" prop="name">
@@ -77,16 +87,38 @@
         <el-form-item label="公司" prop="company">
           <el-input v-model="userForm.company"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="userForm.password" type="password"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input v-model="userForm.confirmPassword" type="password"></el-input>
+        <el-form-item label="默认密码">
+          {{userForm.password}}
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeUserDialog">取 消</el-button>
-        <el-button type="primary" @click="saveUser">确 定</el-button>
+        <el-button type="primary" @click="saveUser" :loading="userForm.isSubmitting">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="重置密码" :visible.sync="passwordDialog.isShow" :close-on-click-modal="false" width="600px">
+      <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRule" label-position="left" label-width="120px"
+               style="width: 400px; margin-left:50px;">
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="passwordForm.password" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input v-model="passwordForm.confirmPassword" type="password"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closePasswordDialog">取 消</el-button>
+        <el-button type="primary" @click="savePassword" :loading="passwordForm.isSubmitting">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="分配角色" :visible.sync="roleDialog.isShow" :close-on-click-modal="false" width="540px">
+      <el-transfer
+        v-model="userRole.roles"
+        :titles="['未分配', '已分配']"
+        :data="roles"></el-transfer>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeRoleDialog">取 消</el-button>
+        <el-button type="primary" @click="saveRoles" :loading="userRole.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -95,11 +127,40 @@
 <script>
   import { mapGetters } from 'vuex'
   import { formatTime } from '@/utils'
+  import { validateEmail } from '@/utils/validate'
 
   export default {
     name: 'User',
     components: {},
     data () {
+      const passwordValidator = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        } else {
+          if (this.passwordForm.confirmPassword !== '') {
+            this.$refs.passwordForm.validateField('confirmPassword')
+          }
+          callback()
+        }
+      }
+      const confirmPasswordValidator = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'))
+        } else if (value !== this.passwordForm.password) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      }
+      const emailValidator = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入邮箱'))
+        } else if (!validateEmail(value)) {
+          callback(new Error('邮箱格式不正确!'))
+        } else {
+          callback()
+        }
+      }
       return {
         userDialog: {
           isShow: false,
@@ -111,22 +172,53 @@
           mobile: '',
           email: '',
           company: '',
-          password: '',
-          confirmPassword: '',
+          password: '123456',
           isSubmitting: false
         },
         userRule: {
           name: [
             {required: true, message: '请输入姓名', trigger: 'change'}
+          ],
+          email: [
+            {required: true, message: '请输入邮箱', trigger: 'change'},
+            {validator: emailValidator, trigger: 'blur'}
           ]
         },
         userList: {
           items: [],
+          loading: false,
           pager: {
             page: 1,
             limit: 5,
             total: 0
           }
+        },
+        roleDialog: {
+          isShow: false
+        },
+        userRole: {
+          userId: '',
+          roles: [],
+          isSubmitting: false
+        },
+        roles: [],
+        passwordDialog: {
+          isShow: false
+        },
+        passwordForm: {
+          password: '',
+          confirmPassword: '',
+          isSubmitting: false
+        },
+        passwordRule: {
+          password: [
+            {required: true, message: '请输入密码', trigger: 'change'},
+            {validator: passwordValidator, trigger: 'blur'}
+          ],
+          confirmPassword: [
+            {required: true, message: '请再输入一次密码', trigger: 'change'},
+            {validator: confirmPasswordValidator, trigger: 'blur'}
+          ]
         }
       }
     },
@@ -146,6 +238,21 @@
           this.$message.error('获取用户失败')
         })
       },
+      getRoleList () {
+        this.$store.dispatch('getRoleList', {
+          page: -1
+        }).then(res => {
+          this.roles = res.data.rows.map(role => {
+            return {
+              key: role.id,
+              label: role.name,
+              disabled: false
+            }
+          })
+        }).catch(() => {
+          this.$message.error('获取角色失败')
+        })
+      },
       addUser () {
         this.userDialog.isShow = true
         this.userDialog.title = '创建用户'
@@ -154,7 +261,6 @@
         this.userForm.mobile = ''
         this.userForm.email = ''
         this.userForm.company = ''
-        this.userForm.password = ''
         this.userForm.confirmPassword = ''
         this.$nextTick(() => {
           this.$refs.userForm.clearValidate()
@@ -192,15 +298,69 @@
               this.userDialog.isShow = false
               this.getUserList()
               this.$message.success('保存成功')
-            }).catch(() => {
+            }).catch(({response}) => {
               this.userForm.isSubmitting = false
-              this.$message.error('保存失败')
+              this.$message.error(response.data.desc)
             })
           }
         })
       },
       assignRoles (user) {
+        this.roleDialog.isShow = true
+        this.userRole.userId = user.id
+        this.userRole.roles = user.roles.map(role => role.id)
+        this.getRoleList()
+      },
+      closeRoleDialog () {
+        this.roleDialog.isShow = false
+      },
+      saveRoles () {
+        this.userRole.isSubmitting = true
 
+        this.$store.dispatch('assignRoles', {
+          userId: this.userRole.userId,
+          roles: this.userRole.roles
+        }).then(() => {
+          this.userRole.isSubmitting = false
+          this.roleDialog.isShow = false
+          this.getUserList()
+          this.$message.success('保存成功')
+        }).catch(({response}) => {
+          this.userRole.isSubmitting = false
+          this.$message.error(response.data.desc)
+        })
+      },
+      resetPassword (user) {
+        this.passwordDialog.isShow = true
+        this.passwordForm.userId = user.id
+        this.passwordForm.password = ''
+        this.passwordForm.confirmPassword = ''
+        if (this.$refs.passwordForm) {
+          this.$refs.passwordForm.clearValidate()
+        }
+      },
+      closePasswordDialog () {
+        this.passwordDialog.isShow = false
+      },
+      savePassword () {
+        this.$refs.passwordForm.validate((valid) => {
+          if (valid) {
+            this.passwordForm.isSubmitting = true
+
+            this.$store.dispatch('savePassword', {
+              userId: this.passwordForm.userId,
+              password: this.passwordForm.password,
+              confirmPassword: this.passwordForm.confirmPassword
+            }).then(() => {
+              this.passwordForm.isSubmitting = false
+              this.passwordDialog.isShow = false
+              this.$message.success('保存成功')
+            }).catch(({response}) => {
+              this.passwordForm.isSubmitting = false
+              this.$message.error(response.data.desc)
+            })
+          }
+        })
       }
     },
     mounted () {
@@ -208,3 +368,13 @@
     }
   }
 </script>
+<style rel="stylesheet/scss" lang="scss">
+  .user-table {
+    .el-tag {
+      & + .el-tag {
+        margin-left: 10px;
+        margin-top: 10px;
+      }
+    }
+  }
+</style>

@@ -12,12 +12,12 @@
       style="width: 100%">
       <el-table-column
         prop="name"
-        label="编码"
+        label="名称"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="displayName"
-        label="显示名称"
+        prop="slug"
+        label="编码"
         width="180">
       </el-table-column>
       <el-table-column
@@ -46,11 +46,11 @@
     <el-dialog :title="roleDialog.title" :visible.sync="roleDialog.isShow" :close-on-click-modal="false">
       <el-form ref="roleForm" :model="roleForm" :rules="roleRule" label-position="left" label-width="120px"
                style="width: 400px; margin-left:50px;">
-        <el-form-item label="编码" prop="name">
+        <el-form-item label="角色名称" prop="name">
           <el-input v-model="roleForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="角色名称" prop="displayName">
-          <el-input v-model="roleForm.displayName"></el-input>
+        <el-form-item label="编码" prop="slug">
+          <el-input v-model="roleForm.slug"></el-input>
         </el-form-item>
         <el-form-item label="角色描述" prop="description">
           <el-input v-model="roleForm.description"></el-input>
@@ -79,16 +79,16 @@
         roleForm: {
           id: '',
           name: '',
-          displayName: '',
+          slug: '',
           description: '',
           isSubmitting: false
         },
         roleRule: {
           name: [
-            {required: true, message: '请输入编码', trigger: 'change'}
-          ],
-          displayName: [
             {required: true, message: '请输入角色名称', trigger: 'change'}
+          ],
+          slug: [
+            {required: true, message: '请输入编码', trigger: 'change'}
           ]
         },
         roleList: {
@@ -116,7 +116,7 @@
           this.roleList.pager.total = res.data.count
           this.roleList.loading = false
         }).catch(() => {
-          this.$message.error('获取用户失败')
+          this.$message.error('获取角色失败')
           this.roleList.loading = false
         })
       },
@@ -125,7 +125,7 @@
         this.roleDialog.title = '创建角色'
         this.roleForm.id = ''
         this.roleForm.name = ''
-        this.roleForm.displayName = ''
+        this.roleForm.slug = ''
         this.roleForm.description = ''
         this.$nextTick(() => {
           this.$refs.roleForm.clearValidate()
@@ -136,7 +136,7 @@
         this.roleDialog.title = '编辑角色'
         this.roleForm.id = role.id
         this.roleForm.name = role.name
-        this.roleForm.displayName = role.displayName
+        this.roleForm.slug = role.slug
         this.roleForm.description = role.description
         if (this.$refs.roleForm) {
           this.$refs.roleForm.clearValidate()
@@ -169,16 +169,16 @@
             this.$store.dispatch(!this.roleForm.id ? 'createRole' : 'updateRole', {
               id: this.roleForm.id,
               name: this.roleForm.name,
-              displayName: this.roleForm.displayName,
+              slug: this.roleForm.slug,
               description: this.roleForm.description
             }).then(() => {
               this.roleForm.isSubmitting = false
               this.roleDialog.isShow = false
               this.getRoleList()
               this.$message.success('保存成功')
-            }).catch(() => {
+            }).catch(({response}) => {
               this.roleForm.isSubmitting = false
-              this.$message.error('保存失败')
+              this.$message.error(response.data.desc)
             })
           }
         })

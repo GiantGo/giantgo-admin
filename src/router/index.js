@@ -83,9 +83,9 @@ router.beforeEach(function (to, from, next) {
       next({path: '/'})
       NProgress.done()
     } else {
-      // 判断当前用户是否已拉取完user_info信息
-      if (store.getters.roles.length === 0) {
-        // 拉取user_info
+      // 判断当前用户是否已获取用户信息，以验证token有效性
+      if (!store.getters.tokenValid) {
+        // 拉取用户信息
         store.dispatch('getMyInfo').then(myInfo => {
           store.dispatch('generateDynamicMenus', {
             roles: myInfo.roles,
