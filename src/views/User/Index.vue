@@ -8,8 +8,7 @@
     <el-table
       :data="userList.items"
       border
-      style="width: 100%"
-      class="user-table">
+      style="width: 100%">
       <el-table-column
         prop="name"
         label="姓名"
@@ -37,7 +36,7 @@
       <el-table-column
         label="角色"
         width="180"
-        align="center">
+        header-align="center">
         <template slot-scope="scope">
           <el-tag v-for="role in scope.row.roles" :key="role.id">{{role.name}}</el-tag>
         </template>
@@ -48,7 +47,7 @@
         align="center">
         <template slot-scope="scope">
           <el-switch
-            v-model="scope.row.isEnable">
+            v-model="scope.row.enabled">
           </el-switch>
         </template>
       </el-table-column>
@@ -73,6 +72,13 @@
       </el-pagination>
     </div>
     <el-dialog :title="userDialog.title" :visible.sync="userDialog.isShow" :close-on-click-modal="false" width="600px">
+      <el-alert
+        :title="'默认密码：' + userForm.password"
+        type="warning"
+        show-icon
+        :closable="false"
+        v-if="!userForm.id">
+      </el-alert>
       <el-form ref="userForm" :model="userForm" :rules="userRule" label-position="left" label-width="120px"
                style="width: 400px; margin-left:50px;">
         <el-form-item label="姓名" prop="name">
@@ -86,9 +92,6 @@
         </el-form-item>
         <el-form-item label="公司" prop="company">
           <el-input v-model="userForm.company"></el-input>
-        </el-form-item>
-        <el-form-item label="默认密码">
-          {{userForm.password}}
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -369,12 +372,8 @@
   }
 </script>
 <style rel="stylesheet/scss" lang="scss">
-  .user-table {
-    .el-tag {
-      & + .el-tag {
-        margin-left: 10px;
-        margin-top: 10px;
-      }
-    }
+  .el-alert {
+    width: 410px;
+    margin: 0 50px 20px 40px;
   }
 </style>

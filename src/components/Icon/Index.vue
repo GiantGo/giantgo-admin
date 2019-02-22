@@ -26,9 +26,11 @@
 <script>
   import icons from './requireIcons'
   import clipboard from '@/utils/clipboard'
+  import Emitter from 'element-ui/src/mixins/emitter'
 
   export default {
     name: 'Icons',
+    mixins: [Emitter],
     data () {
       return {
         iconsMap: icons,
@@ -38,7 +40,8 @@
       }
     },
     model: {
-      prop: 'icon'
+      prop: 'icon',
+      event: 'change'
     },
     props: {
       icon: {
@@ -54,7 +57,8 @@
         return `<svg-icon icon-class="${symbol}" />`
       },
       handleCopy (text, item, event) {
-        this.$emit('input', item)
+        this.$emit('change', item)
+        this.dispatch('ElFormItem', 'el.form.change', item)
         this.iconDialog.isShow = false
         clipboard(text, event, false)
       },

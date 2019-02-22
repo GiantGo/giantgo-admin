@@ -24,7 +24,7 @@
         this.$store.dispatch('setSize', size)
         this.refreshView()
         this.$message({
-          message: 'Switch Size Success',
+          message: '转换字体成功',
           type: 'success'
         })
       },
