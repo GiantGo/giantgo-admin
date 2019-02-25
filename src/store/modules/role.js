@@ -1,4 +1,4 @@
-import { getRoleList, getRole, createRole, updateRole, deleteRole } from '@/api/role'
+import { getRoleList, getRole, createRole, updateRole, deleteRole, assignPermissions } from '@/api/role'
 
 const state = {}
 
@@ -19,6 +19,9 @@ const actions = {
   },
   deleteRole ({commit}, {roleId}) {
     return deleteRole(roleId)
+  },
+  assignPermissions ({commit}, {roleId, permissions}) {
+    return assignPermissions(roleId, permissions)
   }
 }
 

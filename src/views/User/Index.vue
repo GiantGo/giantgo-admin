@@ -17,25 +17,28 @@
       <el-table-column
         prop="email"
         label="邮箱"
-        width="220">
+        width="180">
       </el-table-column>
       <el-table-column
         prop="mobile"
-        label="手机">
+        label="手机"
+        width="120px">
       </el-table-column>
       <el-table-column
         prop="company"
         label="公司">
       </el-table-column>
       <el-table-column
-        label="最后登录时间">
+        label="最后登录时间"
+        width="160px"
+        align="center">
         <template slot-scope="scope">
           {{formatTime(scope.row.lastSignInAt)}}
         </template>
       </el-table-column>
       <el-table-column
         label="角色"
-        width="180"
+        width="160"
         header-align="center">
         <template slot-scope="scope">
           <el-tag v-for="role in scope.row.roles" :key="role.id">{{role.name}}</el-tag>

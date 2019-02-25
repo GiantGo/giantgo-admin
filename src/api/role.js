@@ -39,3 +39,11 @@ export function deleteRole (roleId) {
     method: 'DELETE'
   })
 }
+
+export function assignPermissions (roleId, permissions) {
+  return request({
+    url: '/roles/' + roleId + '/permissions',
+    method: 'PUT',
+    data: permissions
+  })
+}

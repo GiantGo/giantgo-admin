@@ -24,9 +24,10 @@
         prop="description"
         label="描述">
       </el-table-column>
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding">
+      <el-table-column label="操作" align="center" width="320" class-name="small-padding">
         <template slot-scope="scope">
           <el-button type="primary" @click="editRole(scope.row)">编辑</el-button>
+          <el-button type="primary" @click="assignPermission(scope.row)">分配权限</el-button>
           <el-button type="danger" @click="deleteRole(scope.row)" v-if="!scope.row.isSystem">删除</el-button>
         </template>
       </el-table-column>
@@ -59,6 +60,16 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeRoleDialog">取 消</el-button>
         <el-button type="primary" @click="saveRole">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="分配权限" :visible.sync="permissionDialog.isShow" :close-on-click-modal="false" width="540px">
+      <el-transfer
+        v-model="rolePermission.permissions"
+        :titles="['未分配', '已分配']"
+        :data="permissions"></el-transfer>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closePermissionDialog">取 消</el-button>
+        <el-button type="primary" @click="savePermissions" :loading="rolePermission.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -99,6 +110,15 @@
             limit: 5,
             total: 0
           }
+        },
+        permissionDialog: {
+          isShow: false
+        },
+        permissions: [],
+        rolePermission: {
+          roleId: '',
+          permissions: [],
+          isSubmitting: false
         }
       }
     },
@@ -118,6 +138,21 @@
         }).catch(() => {
           this.$message.error('获取角色失败')
           this.roleList.loading = false
+        })
+      },
+      getPermissionList () {
+        this.$store.dispatch('getPermissionList', {
+          page: -1
+        }).then(res => {
+          this.permissions = res.data.rows.map(permission => {
+            return {
+              key: permission.id,
+              label: permission.name,
+              disabled: false
+            }
+          })
+        }).catch(() => {
+          this.$message.error('获取权限失败')
         })
       },
       addRole () {
@@ -181,6 +216,35 @@
               this.$message.error(response.data.desc)
             })
           }
+        })
+      },
+      assignPermission (role) {
+        this.permissionDialog.isShow = true
+        this.rolePermission.roleId = role.id
+        this.$store.dispatch('getRole', {
+          roleId: role.id
+        }).then(res => {
+          this.rolePermission.permissions = res.data.permissions.map(permission => permission.id)
+        })
+        this.getPermissionList()
+      },
+      closePermissionDialog () {
+        this.permissionDialog.isShow = false
+      },
+      savePermissions () {
+        this.rolePermission.isSubmitting = true
+
+        this.$store.dispatch('assignPermissions', {
+          roleId: this.rolePermission.roleId,
+          permissions: this.rolePermission.permissions
+        }).then(() => {
+          this.rolePermission.isSubmitting = false
+          this.permissionDialog.isShow = false
+          this.getRoleList()
+          this.$message.success('保存成功')
+        }).catch(({response}) => {
+          this.userRole.isSubmitting = false
+          this.$message.error(response.data.desc)
         })
       }
     },

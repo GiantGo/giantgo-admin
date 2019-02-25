@@ -8,6 +8,7 @@ import user from './modules/user'
 import socket from './modules/socket'
 import menu from './modules/menu'
 import role from './modules/role'
+import permission from './modules/permission'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     user,
     socket,
     menu,
-    role
+    role,
+    permission
   }
 })
