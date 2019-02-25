@@ -24,6 +24,13 @@
         prop="description"
         label="描述">
       </el-table-column>
+      <el-table-column
+        label="权限"
+        header-align="center">
+        <template slot-scope="scope">
+          <el-tag v-for="permission in scope.row.permissions" :key="permission.id">{{permission.name}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="320" class-name="small-padding">
         <template slot-scope="scope">
           <el-button type="primary" @click="editRole(scope.row)">编辑</el-button>
