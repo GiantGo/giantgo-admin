@@ -117,3 +117,11 @@
 .pagination-container.hidden {
   display: none;
 }
+
+.el-tree {
+  padding: 20px;
+  background: $white;
+  .el-tree-node__content {
+    height: 30px;
+  }
+}

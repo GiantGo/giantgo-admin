@@ -41,7 +41,7 @@ export function deleteDictionaryType (dictionaryTypeId) {
 
 export function getDictionaryItemList (dictionaryTypeId) {
   return request({
-    url: '/dictionaries/types/' + dictionaryTypeId,
+    url: '/dictionaries/types/' + dictionaryTypeId + '/items',
     method: 'GET',
     params: {}
   })

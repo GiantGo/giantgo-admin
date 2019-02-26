@@ -70,10 +70,15 @@
       </div>
     </el-dialog>
     <el-dialog title="分配权限" :visible.sync="permissionDialog.isShow" :close-on-click-modal="false" width="540px">
-      <el-transfer
-        v-model="rolePermission.permissions"
-        :titles="['未分配', '已分配']"
-        :data="permissions"></el-transfer>
+      <el-tree
+        :data="permissions"
+        :default-checked-keys="rolePermission.permissions"
+        :default-expanded-keys="rolePermission.permissions"
+        show-checkbox
+        node-key="id"
+        ref="permissionTree"
+        :props="defaultProps">
+      </el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closePermissionDialog">取 消</el-button>
         <el-button type="primary" @click="savePermissions" :loading="rolePermission.isSubmitting">确 定</el-button>
@@ -90,6 +95,10 @@
     components: {},
     data () {
       return {
+        defaultProps: {
+          children: 'children',
+          label: 'name'
+        },
         roleDialog: {
           isShow: false,
           title: ''
@@ -147,19 +156,13 @@
           this.roleList.loading = false
         })
       },
-      getPermissionList () {
-        this.$store.dispatch('getPermissionList', {
+      getPermissionTree () {
+        this.$store.dispatch('getPermissionTree', {
           page: -1
         }).then(res => {
-          this.permissions = res.data.rows.map(permission => {
-            return {
-              key: permission.id,
-              label: permission.name,
-              disabled: false
-            }
-          })
+          this.permissions = res.data
         }).catch(() => {
-          this.$message.error('获取权限失败')
+          this.$message.error('获取权限列表失败')
         })
       },
       addRole () {
@@ -233,26 +236,27 @@
         }).then(res => {
           this.rolePermission.permissions = res.data.permissions.map(permission => permission.id)
         })
-        this.getPermissionList()
+        this.getPermissionTree()
       },
       closePermissionDialog () {
         this.permissionDialog.isShow = false
       },
       savePermissions () {
-        this.rolePermission.isSubmitting = true
-
-        this.$store.dispatch('assignPermissions', {
-          roleId: this.rolePermission.roleId,
-          permissions: this.rolePermission.permissions
-        }).then(() => {
-          this.rolePermission.isSubmitting = false
-          this.permissionDialog.isShow = false
-          this.getRoleList()
-          this.$message.success('保存成功')
-        }).catch(({response}) => {
-          this.userRole.isSubmitting = false
-          this.$message.error(response.data.desc)
-        })
+        console.log(this.$refs.permissionTree.getCheckedKeys())
+        // this.rolePermission.isSubmitting = true
+        //
+        // this.$store.dispatch('assignPermissions', {
+        //   roleId: this.rolePermission.roleId,
+        //   permissions: this.rolePermission.permissions
+        // }).then(() => {
+        //   this.rolePermission.isSubmitting = false
+        //   this.permissionDialog.isShow = false
+        //   this.getRoleList()
+        //   this.$message.success('保存成功')
+        // }).catch(({response}) => {
+        //   this.userRole.isSubmitting = false
+        //   this.$message.error(response.data.desc)
+        // })
       }
     },
     mounted () {

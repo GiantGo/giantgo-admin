@@ -1,11 +1,9 @@
 import request from '@/utils/request'
 
-export function getPermissionList (page, limit) {
+export function getPermissionTree () {
   return request({
-    url: '/permissions',
+    url: '/permissions/tree',
     method: 'GET',
-    params: {
-      page, limit
-    }
+    params: {}
   })
 }

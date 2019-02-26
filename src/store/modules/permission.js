@@ -1,12 +1,12 @@
-import { getPermissionList } from '@/api/permission'
+import { getPermissionTree } from '@/api/permission'
 
 const state = {}
 
 const getters = {}
 
 const actions = {
-  getPermissionList ({commit}, {page, limit}) {
-    return getPermissionList(page, limit)
+  getPermissionTree ({commit}, {page, limit}) {
+    return getPermissionTree(page, limit)
   }
 }
 

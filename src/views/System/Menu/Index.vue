@@ -10,6 +10,7 @@
             :expand-on-click-node="false"
             :props="defaultProps"
             draggable
+            highlight-current
             @node-drop="handleDrop"
             @node-click="editMenu">
             <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -221,18 +222,10 @@
   }
 </script>
 <style rel="stylesheet/scss" lang="scss">
-  @import '../../styles/variables.scss';
-
-  .menu-tree {
-    padding: 20px;
-    background: $white;
-    .el-tree-node__content {
-      height: 30px;
-    }
-  }
+  @import '../../../styles/variables';
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import '../../styles/variables.scss';
+  @import '../../../styles/variables';
 
   .custom-tree-node {
     flex: 1;

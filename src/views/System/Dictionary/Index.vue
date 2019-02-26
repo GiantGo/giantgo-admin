@@ -9,7 +9,7 @@
             default-expand-all
             :expand-on-click-node="false"
             :props="defaultProps"
-            @node-click="editDictionaryType">
+            @node-click="getDictionaryItemList">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>
                 <svg-icon class-name="dictionary-icon" icon-class="dictionary"/>{{ node.label }}
@@ -19,6 +19,18 @@
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="16" style="padding: 10px;">
+        <tree-table :data="dictionaryItems" :expand-all="true" border>
+          <el-table-column label="名称">
+            <template slot-scope="scope">
+              <span>{{ scope.row.title }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="值">
+            <template slot-scope="scope">
+              <span>{{ scope.row.slug }}</span>
+            </template>
+          </el-table-column>
+        </tree-table>
       </el-col>
     </el-row>
   </div>
@@ -27,11 +39,13 @@
 <script>
   import { mapGetters } from 'vuex'
   import iconPicker from '@/components/Icon/Index'
+  import treeTable from '@/components/TreeTable/Index'
 
   export default {
-    name: 'Menu',
+    name: 'Dictionary',
     components: {
-      iconPicker
+      iconPicker,
+      treeTable
     },
     data () {
       return {
@@ -76,8 +90,12 @@
           this.dictionaryTypes = res.data.rows
         })
       },
-      editDictionaryType () {
-
+      getDictionaryItemList (dictionaryType) {
+        this.$store.dispatch('getDictionaryItemList', {
+          dictionaryTypeId: dictionaryType.id
+        }).then(res => {
+          this.dictionaryItems = res.data.rows
+        })
       },
       handleDrop (draggingNode, dropNode, dropType, ev) {
         console.log('tree drop: ', draggingNode, dropNode, dropType)
@@ -89,18 +107,10 @@
   }
 </script>
 <style rel="stylesheet/scss" lang="scss">
-  @import '../../styles/variables.scss';
-
-  .menu-tree {
-    padding: 20px;
-    background: $white;
-    .el-tree-node__content {
-      height: 30px;
-    }
-  }
+  @import '../../../styles/variables';
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import '../../styles/variables.scss';
+  @import '../../../styles/variables';
 
   .custom-tree-node {
     flex: 1;

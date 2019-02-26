@@ -1,10 +1,10 @@
 /** When your routing table is too long, you can split it into small modules**/
 
 const DefaultLayout = () => import('../../layouts/Default/Index.vue')
-const User = () => import(/* webpackChunkName: "system" */ '../../views/User/Index.vue')
-const Role = () => import(/* webpackChunkName: "system" */ '../../views/Role/Index.vue')
-const Menu = () => import(/* webpackChunkName: "system" */ '../../views/Menu/Index.vue')
-const Dictionary = () => import(/* webpackChunkName: "system" */ '../../views/Dictionary/Index.vue')
+const User = () => import(/* webpackChunkName: "system" */ '../../views/System/User/Index.vue')
+const Role = () => import(/* webpackChunkName: "system" */ '../../views/System/Role/Index.vue')
+const Menu = () => import(/* webpackChunkName: "system" */ '../../views/System/Menu/Index.vue')
+const Dictionary = () => import(/* webpackChunkName: "system" */ '../../views/System/Dictionary/Index.vue')
 
 const systemRouter = [
   {
@@ -23,7 +23,7 @@ const systemRouter = [
         meta: {
           title: '用户管理',
           icon: 'peoples',
-          permissions: ['user:read']
+          permissions: ['user:retrieve', 'user', 'admin']
         }
       }, {
         path: 'role',
@@ -32,7 +32,7 @@ const systemRouter = [
         meta: {
           title: '角色管理',
           icon: 'user',
-          permissions: ['role:read']
+          permissions: ['role:retrieve', 'role', 'admin']
         }
       }, {
         path: 'menu',
@@ -41,7 +41,7 @@ const systemRouter = [
         meta: {
           title: '菜单管理',
           icon: 'user',
-          permissions: ['menu:write']
+          permissions: ['menu:retrieve', 'menu', 'admin']
         }
       }, {
         path: 'dictionary',
@@ -50,7 +50,7 @@ const systemRouter = [
         meta: {
           title: '字典管理',
           icon: 'dictionary',
-          permissions: ['dictionary:write']
+          permissions: ['dictionary:retrieve', 'dictionary', 'admin']
         }
       }
     ]

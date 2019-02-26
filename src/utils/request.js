@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getToken } from '@/utils/token'
 import store from '@/store'
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -28,6 +29,8 @@ service.interceptors.response.use(function (response) {
     store.dispatch('logout').then(() => {
       window.location.reload()
     })
+  } else if (error.response.status === 403) {
+    router.push({path: '/401'})
   }
 
   return Promise.reject(error)
