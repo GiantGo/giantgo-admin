@@ -56,7 +56,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="320" class-name="small-padding">
         <template slot-scope="scope">
-          <el-button type="primary" @click="editUser(scope.row)">编辑</el-button>
+          <el-button type="primary" @click="editUser(scope.row)">编 辑</el-button>
           <el-button type="primary" @click="resetPassword(scope.row)">重置密码</el-button>
           <el-button type="primary" @click="assignRoles(scope.row)">分配角色</el-button>
         </template>
@@ -98,7 +98,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeUserDialog">取 消</el-button>
+        <el-button type="text" @click="closeUserDialog">取 消</el-button>
         <el-button type="primary" @click="saveUser" :loading="userForm.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>
@@ -113,7 +113,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closePasswordDialog">取 消</el-button>
+        <el-button type="text" @click="closePasswordDialog">取 消</el-button>
         <el-button type="primary" @click="savePassword" :loading="passwordForm.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>
@@ -123,7 +123,7 @@
         :titles="['未分配', '已分配']"
         :data="roles"></el-transfer>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeRoleDialog">取 消</el-button>
+        <el-button type="text" @click="closeRoleDialog">取 消</el-button>
         <el-button type="primary" @click="saveRoles" :loading="userRole.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>

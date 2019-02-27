@@ -60,3 +60,11 @@ export function assignRoles (userId, roles) {
     data: roles
   })
 }
+
+export function getMyMenu () {
+  return request({
+    url: '/user/menu',
+    method: 'get',
+    data: {}
+  })
+}

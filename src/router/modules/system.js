@@ -5,6 +5,7 @@ const User = () => import(/* webpackChunkName: "system" */ '../../views/System/U
 const Role = () => import(/* webpackChunkName: "system" */ '../../views/System/Role/Index.vue')
 const Menu = () => import(/* webpackChunkName: "system" */ '../../views/System/Menu/Index.vue')
 const Dictionary = () => import(/* webpackChunkName: "system" */ '../../views/System/Dictionary/Index.vue')
+const Permission = () => import(/* webpackChunkName: "system" */ '../../views/System/Permission/Index.vue')
 
 const systemRouter = [
   {
@@ -22,8 +23,7 @@ const systemRouter = [
         name: 'User',
         meta: {
           title: '用户管理',
-          icon: 'peoples',
-          permissions: ['user:retrieve', 'user', 'admin']
+          icon: 'peoples'
         }
       }, {
         path: 'role',
@@ -31,8 +31,7 @@ const systemRouter = [
         name: 'Role',
         meta: {
           title: '角色管理',
-          icon: 'user',
-          permissions: ['role:retrieve', 'role', 'admin']
+          icon: 'user'
         }
       }, {
         path: 'menu',
@@ -40,8 +39,7 @@ const systemRouter = [
         name: 'Menu',
         meta: {
           title: '菜单管理',
-          icon: 'user',
-          permissions: ['menu:retrieve', 'menu', 'admin']
+          icon: 'user'
         }
       }, {
         path: 'dictionary',
@@ -49,8 +47,15 @@ const systemRouter = [
         name: 'Dictionary',
         meta: {
           title: '字典管理',
-          icon: 'dictionary',
-          permissions: ['dictionary:retrieve', 'dictionary', 'admin']
+          icon: 'dictionary'
+        }
+      }, {
+        path: 'permission',
+        component: Permission,
+        name: 'Permission',
+        meta: {
+          title: '权限管理',
+          icon: 'permission'
         }
       }
     ]

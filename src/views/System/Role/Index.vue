@@ -25,16 +25,17 @@
         label="描述">
       </el-table-column>
       <el-table-column
-        label="权限"
-        header-align="center">
+        prop="createAt"
+        label="创建日期"
+        width="160px"
+        align="center">
         <template slot-scope="scope">
-          <el-tag v-for="permission in scope.row.permissions" :key="permission.id">{{permission.name}}</el-tag>
+          {{parseTime(scope.row.createdAt)}}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="320" class-name="small-padding">
         <template slot-scope="scope">
           <el-button type="primary" @click="editRole(scope.row)">编辑</el-button>
-          <el-button type="primary" @click="assignPermission(scope.row)">分配权限</el-button>
           <el-button type="danger" @click="deleteRole(scope.row)" v-if="!scope.row.isSystem">删除</el-button>
         </template>
       </el-table-column>
@@ -63,25 +64,22 @@
         <el-form-item label="角色描述" prop="description">
           <el-input v-model="roleForm.description"></el-input>
         </el-form-item>
+        <el-form-item label="权限" prop="permissions">
+          <tree-select v-model="roleForm.permissions" :multiple="true" :options="permissions"
+                       value-consists-of="BRANCH_PRIORITY"
+                       placeholder="请选择权限" :normalizer="treeSelectNormalizer({label: 'name'})">
+          </tree-select>
+        </el-form-item>
+        <el-form-item label="菜单" prop="menus">
+          <tree-select v-model="roleForm.menus" :multiple="true" :options="menus"
+                       value-consists-of="ALL_WITH_INDETERMINATE"
+                       placeholder="请选择菜单" :normalizer="treeSelectNormalizer({label: 'title'})">
+          </tree-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeRoleDialog">取 消</el-button>
+        <el-button type="text" @click="closeRoleDialog">取 消</el-button>
         <el-button type="primary" @click="saveRole">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="分配权限" :visible.sync="permissionDialog.isShow" :close-on-click-modal="false" width="540px">
-      <el-tree
-        :data="permissions"
-        :default-checked-keys="rolePermission.permissions"
-        :default-expanded-keys="rolePermission.permissions"
-        show-checkbox
-        node-key="id"
-        ref="permissionTree"
-        :props="defaultProps">
-      </el-tree>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closePermissionDialog">取 消</el-button>
-        <el-button type="primary" @click="savePermissions" :loading="rolePermission.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -89,12 +87,16 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import { parseTime, treeSelectNormalizer } from '@/utils'
+  import treeSelect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
   export default {
     name: 'Role',
-    components: {},
+    components: {treeSelect},
     data () {
       return {
+        matchKeys: ['name'],
         defaultProps: {
           children: 'children',
           label: 'name'
@@ -108,6 +110,8 @@
           name: '',
           slug: '',
           description: '',
+          permissions: [],
+          menus: [],
           isSubmitting: false
         },
         roleRule: {
@@ -127,21 +131,16 @@
             total: 0
           }
         },
-        permissionDialog: {
-          isShow: false
-        },
         permissions: [],
-        rolePermission: {
-          roleId: '',
-          permissions: [],
-          isSubmitting: false
-        }
+        menus: []
       }
     },
     computed: {
       ...mapGetters([])
     },
     methods: {
+      parseTime,
+      treeSelectNormalizer,
       getRoleList () {
         this.roleList.loading = true
         this.$store.dispatch('getRoleList', {
@@ -165,6 +164,13 @@
           this.$message.error('获取权限列表失败')
         })
       },
+      getMenuTree () {
+        this.$store.dispatch('getMenuTree').then(res => {
+          this.menus = res.data
+        }).catch(() => {
+          this.$message.error('获取菜单列表失败')
+        })
+      },
       addRole () {
         this.roleDialog.isShow = true
         this.roleDialog.title = '创建角色'
@@ -183,6 +189,12 @@
         this.roleForm.name = role.name
         this.roleForm.slug = role.slug
         this.roleForm.description = role.description
+        this.$store.dispatch('getRole', {
+          roleId: role.id
+        }).then(res => {
+          this.roleForm.permissions = res.data.permissions.map(permission => permission.id)
+          this.roleForm.menus = res.data.menus.map(menu => menu.id)
+        })
         if (this.$refs.roleForm) {
           this.$refs.roleForm.clearValidate()
         }
@@ -215,7 +227,9 @@
               id: this.roleForm.id,
               name: this.roleForm.name,
               slug: this.roleForm.slug,
-              description: this.roleForm.description
+              description: this.roleForm.description,
+              permissions: this.roleForm.permissions,
+              menus: this.roleForm.menus
             }).then(() => {
               this.roleForm.isSubmitting = false
               this.roleDialog.isShow = false
@@ -227,40 +241,12 @@
             })
           }
         })
-      },
-      assignPermission (role) {
-        this.permissionDialog.isShow = true
-        this.rolePermission.roleId = role.id
-        this.$store.dispatch('getRole', {
-          roleId: role.id
-        }).then(res => {
-          this.rolePermission.permissions = res.data.permissions.map(permission => permission.id)
-        })
-        this.getPermissionTree()
-      },
-      closePermissionDialog () {
-        this.permissionDialog.isShow = false
-      },
-      savePermissions () {
-        console.log(this.$refs.permissionTree.getCheckedKeys())
-        // this.rolePermission.isSubmitting = true
-        //
-        // this.$store.dispatch('assignPermissions', {
-        //   roleId: this.rolePermission.roleId,
-        //   permissions: this.rolePermission.permissions
-        // }).then(() => {
-        //   this.rolePermission.isSubmitting = false
-        //   this.permissionDialog.isShow = false
-        //   this.getRoleList()
-        //   this.$message.success('保存成功')
-        // }).catch(({response}) => {
-        //   this.userRole.isSubmitting = false
-        //   this.$message.error(response.data.desc)
-        // })
       }
     },
     mounted () {
       this.getRoleList()
+      this.getPermissionTree()
+      this.getMenuTree()
     }
   }
 </script>

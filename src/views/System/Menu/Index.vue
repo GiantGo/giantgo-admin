@@ -9,13 +9,12 @@
             default-expand-all
             :expand-on-click-node="false"
             :props="defaultProps"
-            draggable
             highlight-current
             @node-drop="handleDrop"
             @node-click="editMenu">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>
-                <svg-icon class-name="drag-icon" icon-class="menu" v-if="data.id !== -1"/>{{ node.label }}
+                <svg-icon class-name="menu-icon" :icon-class="data.icon" v-if="data.id !== -1"/>{{ node.label }}
               </span>
               <span>
                 <el-button
@@ -62,8 +61,8 @@
             <el-form-item label="路径" prop="path">
               <el-input v-model="menuForm.path" :disabled="menuForm.id === -1"></el-input>
             </el-form-item>
-            <el-form-item label="权限名称" prop="permissionName">
-              <el-input v-model="menuForm.permissionName" :disabled="menuForm.id === -1"></el-input>
+            <el-form-item label="排序" prop="order">
+              <el-input v-model="menuForm.order" :disabled="menuForm.id === -1"></el-input>
             </el-form-item>
             <el-form-item v-if="menuForm.id !== -1">
               <el-button type="default" @click="resetMenu">重 置</el-button>
@@ -79,11 +78,15 @@
 <script>
   import { mapGetters } from 'vuex'
   import iconPicker from '@/components/Icon/Index'
+  import treeSelect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+  import { treeSelectNormalizer } from '@/utils'
 
   export default {
     name: 'Menu',
     components: {
-      iconPicker
+      iconPicker,
+      treeSelect
     },
     data () {
       return {
@@ -98,7 +101,7 @@
           title: '',
           icon: '',
           path: '',
-          permissionName: '',
+          order: '',
           isSubmitting: false
         },
         menuRule: {
@@ -119,6 +122,7 @@
       ...mapGetters([])
     },
     methods: {
+      treeSelectNormalizer,
       getMenuList () {
         this.$store.dispatch('getMenuTree').then(res => {
           this.menus = [{
@@ -150,7 +154,7 @@
         this.menuForm.title = ''
         this.menuForm.icon = ''
         this.menuForm.path = ''
-        this.menuForm.permissionName = ''
+        this.menuForm.order = ''
         this.menuBreadcrumbs = this.generateMenuBreadcrumb([this.menuForm], node)
         this.$nextTick(() => {
           this.$refs.menuForm.clearValidate()
@@ -162,7 +166,7 @@
         this.menuForm.title = menu.title
         this.menuForm.icon = menu.icon
         this.menuForm.path = menu.path
-        this.menuForm.permissionName = menu.permissionName
+        this.menuForm.order = menu.order
         this.menuBreadcrumbs = this.generateMenuBreadcrumb([this.menuForm], node.parent)
         this.$nextTick(() => {
           this.$refs.menuForm.clearValidate()
@@ -200,7 +204,7 @@
               title: this.menuForm.title,
               icon: this.menuForm.icon,
               path: this.menuForm.path,
-              permissionName: this.menuForm.permissionName
+              order: this.menuForm.order
             }).then(() => {
               this.menuForm.isSubmitting = false
               this.getMenuList()
@@ -236,7 +240,7 @@
     padding-right: 8px;
   }
 
-  .drag-icon {
+  .menu-icon {
     margin-right: 5px;
     cursor: move;
   }

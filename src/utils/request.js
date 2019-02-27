@@ -30,7 +30,7 @@ service.interceptors.response.use(function (response) {
       window.location.reload()
     })
   } else if (error.response.status === 403) {
-    router.push({path: '/401'})
+    router.push({path: '/401', replace: true, query: {noGoBack: true}})
   }
 
   return Promise.reject(error)
