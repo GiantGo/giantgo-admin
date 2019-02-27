@@ -63,7 +63,6 @@
     },
     data () {
       const parentValidator = (rule, value, callback) => {
-        console.log(123)
         if (value === this.permissionForm.id) {
           callback(new Error('所属上级不能是本身'))
         } else {
@@ -145,6 +144,9 @@
         this.permissionForm.name = permission.name
         this.permissionForm.slug = permission.slug
         this.permissionForm.parentId = permission.parentId
+        this.$nextTick(() => {
+          this.$refs.permissionForm.clearValidate()
+        })
       },
       deletePermission (permission) {
         this.$confirm('确定要删除权限' + permission.name + '吗?', '提示', {

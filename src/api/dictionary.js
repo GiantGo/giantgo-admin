@@ -47,6 +47,14 @@ export function getDictionaryItemList (dictionaryTypeId) {
   })
 }
 
+export function getDictionaryItemTree (dictionaryTypeId) {
+  return request({
+    url: '/dictionaries/types/' + dictionaryTypeId + '/items/tree',
+    method: 'GET',
+    params: {}
+  })
+}
+
 export function getDictionaryItem (dictionaryTypeId, dictionaryItemId) {
   return request({
     url: '/dictionaries/types/' + dictionaryTypeId + '/items/' + dictionaryItemId,

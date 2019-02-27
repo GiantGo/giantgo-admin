@@ -79,7 +79,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="closeRoleDialog">取 消</el-button>
-        <el-button type="primary" @click="saveRole">确 定</el-button>
+        <el-button type="primary" @click="saveRole" :loading="roleForm.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>
   </div>

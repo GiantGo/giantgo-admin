@@ -8,7 +8,8 @@ import {
   getDictionaryItem,
   createDictionaryItem,
   updateDictionaryItem,
-  deleteDictionaryItem
+  deleteDictionaryItem,
+  getDictionaryItemTree
 } from '@/api/dictionary'
 
 const state = {}
@@ -33,6 +34,9 @@ const actions = {
   },
   getDictionaryItemList ({commit}, {dictionaryTypeId}) {
     return getDictionaryItemList(dictionaryTypeId)
+  },
+  getDictionaryItemTree ({commit}, {dictionaryTypeId}) {
+    return getDictionaryItemTree(dictionaryTypeId)
   },
   getDictionaryItem ({commit}, {dictionaryItemId}) {
     return getDictionaryItem(dictionaryItemId)
