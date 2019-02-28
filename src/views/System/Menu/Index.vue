@@ -80,7 +80,7 @@
   import iconPicker from '@/components/Icon/Index'
   import treeSelect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-  import { treeSelectNormalizer } from '@/utils'
+  import { treeSelectNormalizer } from '@/utils/tree'
 
   export default {
     name: 'Menu',

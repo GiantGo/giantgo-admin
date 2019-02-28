@@ -185,6 +185,9 @@
           name: [
             {required: true, message: '请输入姓名', trigger: 'change'}
           ],
+          mobile: [
+            {required: true, message: '请输入手机', trigger: 'change'}
+          ],
           email: [
             {required: true, message: '请输入邮箱', trigger: 'change'},
             {validator: emailValidator, trigger: 'blur'}
@@ -342,7 +345,9 @@
         this.passwordForm.password = ''
         this.passwordForm.confirmPassword = ''
         if (this.$refs.passwordForm) {
-          this.$refs.passwordForm.clearValidate()
+          this.$nextTick(() => {
+            this.$refs.passwordForm.clearValidate()
+          })
         }
       },
       closePasswordDialog () {
@@ -353,7 +358,7 @@
           if (valid) {
             this.passwordForm.isSubmitting = true
 
-            this.$store.dispatch('savePassword', {
+            this.$store.dispatch('changePassword', {
               userId: this.passwordForm.userId,
               password: this.passwordForm.password,
               confirmPassword: this.passwordForm.confirmPassword

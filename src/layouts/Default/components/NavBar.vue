@@ -24,7 +24,7 @@
         <el-dropdown-menu slot="dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Dashboard
+              首页
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>

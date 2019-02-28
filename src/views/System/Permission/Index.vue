@@ -50,9 +50,11 @@
   import { mapGetters } from 'vuex'
   import iconPicker from '@/components/Icon/Index'
   import treeTable from '@/components/TreeTable/Index'
-  import { parseTime, treeSelectNormalizer } from '@/utils'
+  import { parseTime } from '@/utils'
+  import { treeSelectNormalizer, setTreeDisable } from '@/utils/tree'
   import treeSelect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+  import { cloneDeep } from 'lodash'
 
   export default {
     name: 'Dictionary',
@@ -120,7 +122,6 @@
       getPermissionTree () {
         this.$store.dispatch('getPermissionTree', {}).then(res => {
           this.permissionTable = res.data
-          this.permissionTree = [{id: -1, name: '顶级', children: res.data}]
         })
       },
       parentIdChange () {
@@ -133,6 +134,7 @@
         this.permissionForm.name = ''
         this.permissionForm.slug = ''
         this.permissionForm.parentId = -1
+        this.permissionTree = [{id: -1, name: '顶级', children: cloneDeep(this.permissionTable)}]
         this.$nextTick(() => {
           this.$refs.permissionForm.clearValidate()
         })
@@ -144,6 +146,8 @@
         this.permissionForm.name = permission.name
         this.permissionForm.slug = permission.slug
         this.permissionForm.parentId = permission.parentId
+        this.permissionTree = [{id: -1, name: '顶级', children: cloneDeep(this.permissionTable)}]
+        setTreeDisable(permission.id, this.permissionTree)
         this.$nextTick(() => {
           this.$refs.permissionForm.clearValidate()
         })

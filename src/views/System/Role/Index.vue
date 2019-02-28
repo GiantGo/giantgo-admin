@@ -62,7 +62,7 @@
           <el-input v-model="roleForm.slug"></el-input>
         </el-form-item>
         <el-form-item label="角色描述" prop="description">
-          <el-input v-model="roleForm.description"></el-input>
+          <el-input v-model="roleForm.description" rows="3" type="textarea"/>
         </el-form-item>
         <el-form-item label="权限" prop="permissions">
           <tree-select v-model="roleForm.permissions" :multiple="true" :options="permissions"
@@ -87,7 +87,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { parseTime, treeSelectNormalizer } from '@/utils'
+  import { parseTime } from '@/utils'
+  import { treeSelectNormalizer } from '@/utils/tree'
   import treeSelect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -178,6 +179,8 @@
         this.roleForm.name = ''
         this.roleForm.slug = ''
         this.roleForm.description = ''
+        this.roleForm.permissions = []
+        this.roleForm.menus = []
         this.$nextTick(() => {
           this.$refs.roleForm.clearValidate()
         })

@@ -123,7 +123,8 @@
   import { cloneDeep } from 'lodash'
   import iconPicker from '@/components/Icon/Index'
   import treeTable from '@/components/TreeTable/Index'
-  import { parseTime, treeSelectNormalizer } from '@/utils'
+  import { parseTime } from '@/utils'
+  import { treeSelectNormalizer, setTreeDisable } from '@/utils/tree'
   import treeSelect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
@@ -318,18 +319,9 @@
         this.dictionaryItemForm.order = dictionaryItem.order
         this.dictionaryItemForm.parentId = dictionaryItem.parentId
         this.dictionaryItemTree = [{id: -1, title: '顶级', children: cloneDeep(this.dictionaryItemTable)}]
-        this.setDictionaryItemTreeDisable(dictionaryItem.id, this.dictionaryItemTree)
+        setTreeDisable(dictionaryItem.id, this.dictionaryItemTree)
         this.$nextTick(() => {
           this.$refs.dictionaryItemForm.clearValidate()
-        })
-      },
-      setDictionaryItemTreeDisable (dictionaryItemId, tree) {
-        tree.forEach(item => {
-          if (item.id === dictionaryItemId) {
-            item.isDisabled = true
-          } else if (item.children && item.children.length) {
-            this.setDictionaryItemTreeDisable(dictionaryItemId, item.children)
-          }
         })
       },
       deleteDictionaryItem (dictionaryItem) {

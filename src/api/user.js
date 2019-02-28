@@ -68,3 +68,19 @@ export function getMyMenu () {
     data: {}
   })
 }
+
+export function changePassword (userId, passwordInfo) {
+  return request({
+    url: '/users/' + userId + '/password',
+    method: 'patch',
+    data: passwordInfo
+  })
+}
+
+export function changeMyPassword (passwordInfo) {
+  return request({
+    url: '/user/password',
+    method: 'patch',
+    data: passwordInfo
+  })
+}

@@ -1,4 +1,14 @@
-import { signIn, signUp, getMyInfo, getUserList, createUser, updateUser, assignRoles } from '@/api/user'
+import {
+  signIn,
+  signUp,
+  getMyInfo,
+  getUserList,
+  createUser,
+  updateUser,
+  assignRoles,
+  changePassword,
+  changeMyPassword
+} from '@/api/user'
 import { setToken, removeToken } from '@/utils/token'
 import { isString, isArray } from '@/utils'
 
@@ -93,6 +103,12 @@ const actions = {
   },
   assignRoles ({commit}, {userId, roles}) {
     return assignRoles(userId, roles)
+  },
+  changePassword ({commit}, {userId, password, confirmPassword}) {
+    return changePassword(userId, {password, confirmPassword})
+  },
+  changeMyPassword ({commit}, {password, confirmPassword}) {
+    return changeMyPassword({password, confirmPassword})
   }
 }
 

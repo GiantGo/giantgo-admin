@@ -295,13 +295,3 @@ export function uniqueArr (arr) {
 export function isExternal (path) {
   return /^(https?:|mailto:|tel:)/.test(path)
 }
-
-export function treeSelectNormalizer ({id = 'id', label = 'label', children = 'children'}) {
-  return (node) => {
-    return {
-      id: node[id],
-      label: node[label],
-      children: node[children]
-    }
-  }
-}
