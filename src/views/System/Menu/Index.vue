@@ -62,7 +62,7 @@
               <el-input v-model="menuForm.path" :disabled="menuForm.id === -1"></el-input>
             </el-form-item>
             <el-form-item label="排序" prop="order">
-              <el-input v-model="menuForm.order" :disabled="menuForm.id === -1"></el-input>
+              <el-input-number v-model="menuForm.order" :disabled="menuForm.id === -1"></el-input-number>
             </el-form-item>
             <el-form-item v-if="menuForm.id !== -1">
               <el-button type="default" @click="resetMenu">重 置</el-button>
@@ -205,7 +205,8 @@
               icon: this.menuForm.icon,
               path: this.menuForm.path,
               order: this.menuForm.order
-            }).then(() => {
+            }).then(res => {
+              this.menuForm.id = res.data.id
               this.menuForm.isSubmitting = false
               this.getMenuList()
               this.$message.success('保存成功')

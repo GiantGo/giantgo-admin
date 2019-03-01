@@ -100,7 +100,7 @@
           <el-input v-model="dictionaryItemForm.slug"></el-input>
         </el-form-item>
         <el-form-item label="排序" prop="order">
-          <el-input v-model="dictionaryItemForm.order"></el-input>
+          <el-input-number v-model="dictionaryItemForm.order"></el-input-number>
         </el-form-item>
         <el-form-item label="所属上级" prop="parentId">
           <tree-select v-model="dictionaryItemForm.parentId" :options="dictionaryItemTree"
@@ -178,6 +178,7 @@
           parentId: '',
           title: '',
           slug: '',
+          order: '',
           isSubmitting: false
         },
         dictionaryTypeRule: {
@@ -331,6 +332,7 @@
           type: 'warning'
         }).then(() => {
           this.$store.dispatch('deleteDictionaryItem', {
+            dictionaryTypeId: this.currentDictionaryTypeId,
             dictionaryItemId: dictionaryItem.id
           }).then(() => {
             this.$message.success('删除成功')
