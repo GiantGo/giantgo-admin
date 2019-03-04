@@ -66,8 +66,8 @@ const actions = {
       setToken(response.data.token)
     })
   },
-  signIn ({commit}, {userName, password}) {
-    return signIn(userName, password).then((response) => {
+  signIn ({commit}, {username, password}) {
+    return signIn(username, password).then((response) => {
       setToken(response.data.token)
     })
   },
@@ -104,11 +104,11 @@ const actions = {
   assignRoles ({commit}, {userId, roles}) {
     return assignRoles(userId, roles)
   },
-  changePassword ({commit}, {userId, password, confirmPassword}) {
-    return changePassword(userId, {password, confirmPassword})
+  changePassword ({commit}, {userId, password}) {
+    return changePassword(userId, {password})
   },
-  changeMyPassword ({commit}, {password, confirmPassword}) {
-    return changeMyPassword({password, confirmPassword})
+  changeMyPassword ({commit}, {oldPassword, password}) {
+    return changeMyPassword({oldPassword, password})
   }
 }
 

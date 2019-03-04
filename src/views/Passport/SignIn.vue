@@ -4,8 +4,8 @@
       <el-form class="passport-form" ref="passportForm" :model="passportForm" :rules="rules" label-position="left"
                label-width="0px" @keyup.enter.native="signIn">
         <h3 class="title">登录</h3>
-        <el-form-item prop="userName">
-          <el-input type="text" v-model="passportForm.userName" auto-complete="off" placeholder="手机/邮箱"/>
+        <el-form-item prop="username">
+          <el-input type="text" v-model="passportForm.username" auto-complete="off" placeholder="手机/邮箱"/>
         </el-form-item>
         <el-form-item prop="password">
           <el-input type="password" v-model="passportForm.password" auto-complete="off" placeholder="密码"/>
@@ -26,12 +26,12 @@
     data () {
       return {
         passportForm: {
-          userName: '15930181489',
+          username: '15930181489',
           password: '123123',
           isSubmitting: false
         },
         rules: {
-          userName: [
+          username: [
             {required: true, message: '请输入用户名'},
             {max: 255, message: '长度不超过255个字符'}
           ],
@@ -49,7 +49,7 @@
           if (valid) {
             this.passportForm.isSubmitting = true
             this.$store.dispatch('signIn', {
-              userName: this.passportForm.userName,
+              username: this.passportForm.username,
               password: this.passportForm.password
             }).then(() => {
               let redirectUrl = this.$route.query.redirect

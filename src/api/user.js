@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
-export function signIn (userName, password) {
+export function signIn (username, password) {
   return request({
     url: '/user/token',
     method: 'POST',
     data: {
-      userName,
+      username,
       password
     }
   })
@@ -61,9 +61,9 @@ export function assignRoles (userId, roles) {
   })
 }
 
-export function getMyMenu () {
+export function getMyMenus () {
   return request({
-    url: '/user/menu',
+    url: '/user/menus',
     method: 'get',
     data: {}
   })

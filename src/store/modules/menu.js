@@ -1,7 +1,7 @@
 import { checkRoleRoute, checkPermissionRoute } from '@/utils/route'
 import { routes, defaultRoute, moduleRoutes } from '@/router'
 import { getMenuTree, createMenu, updateMenu, deleteMenu } from '@/api/menu'
-import { getMyMenu } from '@/api/user'
+import { getMyMenus } from '@/api/user'
 
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
@@ -96,7 +96,7 @@ const actions = {
    * @returns {Q.Promise<Array<*>> | Q.Promise<Array<*> | never> | PromiseLike<Array | never> | Promise<Array | never>}
    */
   generateDynamicMenus ({commit}, {roles, permissions}) {
-    return getMyMenu().then(response => {
+    return getMyMenus().then(response => {
       let menus = formatMenus(response.data)
       let accessedRouters = moduleRoutes.concat(defaultRoute)
       // 根据角色和权限过滤路由表

@@ -58,7 +58,6 @@
         <template slot-scope="scope">
           <el-button type="primary" @click="editUser(scope.row)">编 辑</el-button>
           <el-button type="primary" @click="resetPassword(scope.row)">重置密码</el-button>
-          <el-button type="primary" @click="assignRoles(scope.row)">分配角色</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,6 +95,16 @@
         <el-form-item label="公司" prop="company">
           <el-input v-model="userForm.company"></el-input>
         </el-form-item>
+        <el-form-item label="角色" prop="roles">
+          <el-select v-model="userForm.roles" multiple placeholder="请选择" clearable>
+            <el-option
+              v-for="role in roles"
+              :key="role.id"
+              :label="role.name"
+              :value="role.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="closeUserDialog">取 消</el-button>
@@ -115,16 +124,6 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="closePasswordDialog">取 消</el-button>
         <el-button type="primary" @click="savePassword" :loading="passwordForm.isSubmitting">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="分配角色" :visible.sync="roleDialog.isShow" :close-on-click-modal="false" width="540px">
-      <el-transfer
-        v-model="userRole.roles"
-        :titles="['未分配', '已分配']"
-        :data="roles"></el-transfer>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="text" @click="closeRoleDialog">取 消</el-button>
-        <el-button type="primary" @click="saveRoles" :loading="userRole.isSubmitting">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -179,6 +178,7 @@
           email: '',
           company: '',
           password: '123456',
+          roles: [],
           isSubmitting: false
         },
         userRule: {
@@ -201,14 +201,6 @@
             limit: 5,
             total: 0
           }
-        },
-        roleDialog: {
-          isShow: false
-        },
-        userRole: {
-          userId: '',
-          roles: [],
-          isSubmitting: false
         },
         roles: [],
         passwordDialog: {
@@ -251,13 +243,7 @@
         this.$store.dispatch('getRoleList', {
           page: -1
         }).then(res => {
-          this.roles = res.data.rows.map(role => {
-            return {
-              key: role.id,
-              label: role.name,
-              disabled: false
-            }
-          })
+          this.roles = res.data.rows
         }).catch(() => {
           this.$message.error('获取角色失败')
         })
@@ -271,6 +257,7 @@
         this.userForm.email = ''
         this.userForm.company = ''
         this.userForm.confirmPassword = ''
+        this.userForm.roles = []
         this.$nextTick(() => {
           this.$refs.userForm.clearValidate()
         })
@@ -283,6 +270,7 @@
         this.userForm.mobile = user.mobile
         this.userForm.email = user.email
         this.userForm.company = user.company
+        this.userForm.roles = user.roles.map(role => role.id)
         if (this.$refs.userForm) {
           this.$refs.userForm.clearValidate()
         }
@@ -301,7 +289,8 @@
               mobile: this.userForm.mobile,
               email: this.userForm.email,
               company: this.userForm.company,
-              password: this.userForm.password
+              password: this.userForm.password,
+              roles: this.userForm.roles
             }).then(() => {
               this.userForm.isSubmitting = false
               this.userDialog.isShow = false
@@ -312,31 +301,6 @@
               this.$message.error(response.data.desc)
             })
           }
-        })
-      },
-      assignRoles (user) {
-        this.roleDialog.isShow = true
-        this.userRole.userId = user.id
-        this.userRole.roles = user.roles.map(role => role.id)
-        this.getRoleList()
-      },
-      closeRoleDialog () {
-        this.roleDialog.isShow = false
-      },
-      saveRoles () {
-        this.userRole.isSubmitting = true
-
-        this.$store.dispatch('assignRoles', {
-          userId: this.userRole.userId,
-          roles: this.userRole.roles
-        }).then(() => {
-          this.userRole.isSubmitting = false
-          this.roleDialog.isShow = false
-          this.getUserList()
-          this.$message.success('保存成功')
-        }).catch(({response}) => {
-          this.userRole.isSubmitting = false
-          this.$message.error(response.data.desc)
         })
       },
       resetPassword (user) {
@@ -360,8 +324,7 @@
 
             this.$store.dispatch('changePassword', {
               userId: this.passwordForm.userId,
-              password: this.passwordForm.password,
-              confirmPassword: this.passwordForm.confirmPassword
+              password: this.passwordForm.password
             }).then(() => {
               this.passwordForm.isSubmitting = false
               this.passwordDialog.isShow = false
@@ -376,6 +339,7 @@
     },
     mounted () {
       this.getUserList()
+      this.getRoleList()
     }
   }
 </script>
