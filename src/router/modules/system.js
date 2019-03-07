@@ -11,52 +11,22 @@ const systemRouter = [
   {
     path: '/system',
     component: DefaultLayout,
-    redirect: '/system/user',
-    meta: {
-      title: '系统设置',
-      icon: 'chart'
-    },
     children: [
       {
         path: 'user',
-        component: User,
-        name: 'User',
-        meta: {
-          title: '用户管理',
-          icon: 'peoples'
-        }
+        component: User
       }, {
         path: 'role',
-        component: Role,
-        name: 'Role',
-        meta: {
-          title: '角色管理',
-          icon: 'user'
-        }
+        component: Role
       }, {
         path: 'menu',
-        component: Menu,
-        name: 'Menu',
-        meta: {
-          title: '菜单管理',
-          icon: 'user'
-        }
+        component: Menu
       }, {
         path: 'dictionary',
-        component: Dictionary,
-        name: 'Dictionary',
-        meta: {
-          title: '字典管理',
-          icon: 'dictionary'
-        }
+        component: Dictionary
       }, {
         path: 'permission',
-        component: Permission,
-        name: 'Permission',
-        meta: {
-          title: '权限管理',
-          icon: 'permission'
-        }
+        component: Permission
       }
     ]
   }

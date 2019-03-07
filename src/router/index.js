@@ -86,12 +86,8 @@ router.beforeEach(function (to, from, next) {
       // 判断当前用户是否已获取用户信息，以验证token有效性
       if (!store.getters.tokenValid) {
         // 拉取用户信息
-        store.dispatch('getMyInfo').then(myInfo => {
-          store.dispatch('generateDynamicMenus', {
-            roles: myInfo.roles,
-            permissions: myInfo.permissions,
-            pathName: window.location.pathname.replace(/\//g, '')
-          }).then(routes => {
+        store.dispatch('getMyInfo').then(() => {
+          store.dispatch('generateRoutes').then(routes => {
             router.addRoutes(routes) // 动态添加可访问路由表
             next({...to, replace: true}) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
