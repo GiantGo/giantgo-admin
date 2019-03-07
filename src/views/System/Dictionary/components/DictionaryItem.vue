@@ -138,7 +138,7 @@
         this.dictionaryItemForm.parentId = -1
         this.dictionaryItemTree = [{id: -1, title: '顶级', children: cloneDeep(this.dictionaryItemTable)}]
         this.$nextTick(() => {
-          this.$refs.dictionaryItemForm.clearValidate()
+          this.$refs.dictionaryItemForm && this.$refs.dictionaryItemForm.clearValidate()
         })
       },
       editDictionaryItem (dictionaryItem) {
@@ -152,7 +152,7 @@
         this.dictionaryItemTree = [{id: -1, title: '顶级', children: cloneDeep(this.dictionaryItemTable)}]
         setTreeDisable(dictionaryItem.id, this.dictionaryItemTree)
         this.$nextTick(() => {
-          this.$refs.dictionaryItemForm.clearValidate()
+          this.$refs.dictionaryItemForm && this.$refs.dictionaryItemForm.clearValidate()
         })
       },
       deleteDictionaryItem (dictionaryItem) {

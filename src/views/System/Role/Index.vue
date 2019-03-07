@@ -182,7 +182,7 @@
         this.roleForm.permissions = []
         this.roleForm.menus = []
         this.$nextTick(() => {
-          this.$refs.roleForm.clearValidate()
+          this.$refs.roleForm && this.$refs.roleForm.clearValidate()
         })
       },
       editRole (role) {
@@ -198,9 +198,9 @@
           this.roleForm.permissions = res.data.permissions.map(permission => permission.id)
           this.roleForm.menus = res.data.menus.map(menu => menu.id)
         })
-        if (this.$refs.roleForm) {
-          this.$refs.roleForm.clearValidate()
-        }
+        this.$nextTick(() => {
+          this.$refs.roleForm && this.$refs.roleForm.clearValidate()
+        })
       },
       deleteRole (role) {
         this.$confirm('确定要删除角色信息吗?', '提示', {

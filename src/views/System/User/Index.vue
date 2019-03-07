@@ -259,7 +259,7 @@
         this.userForm.confirmPassword = ''
         this.userForm.roles = []
         this.$nextTick(() => {
-          this.$refs.userForm.clearValidate()
+          this.$refs.userForm && this.$refs.userForm.clearValidate()
         })
       },
       editUser (user) {
@@ -271,9 +271,9 @@
         this.userForm.email = user.email
         this.userForm.company = user.company
         this.userForm.roles = user.roles.map(role => role.id)
-        if (this.$refs.userForm) {
-          this.$refs.userForm.clearValidate()
-        }
+        this.$nextTick(() => {
+          this.$refs.userForm && this.$refs.userForm.clearValidate()
+        })
       },
       closeUserDialog () {
         this.userDialog.isShow = false
@@ -308,11 +308,9 @@
         this.passwordForm.userId = user.id
         this.passwordForm.password = ''
         this.passwordForm.confirmPassword = ''
-        if (this.$refs.passwordForm) {
-          this.$nextTick(() => {
-            this.$refs.passwordForm.clearValidate()
-          })
-        }
+        this.$nextTick(() => {
+          this.$refs.passwordForm && this.$refs.passwordForm.clearValidate()
+        })
       },
       closePasswordDialog () {
         this.passwordDialog.isShow = false

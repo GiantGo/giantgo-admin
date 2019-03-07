@@ -136,7 +136,7 @@
         this.permissionForm.parentId = -1
         this.permissionTree = [{id: -1, name: '顶级', children: cloneDeep(this.permissionTable)}]
         this.$nextTick(() => {
-          this.$refs.permissionForm.clearValidate()
+          this.$refs.permissionForm && this.$refs.permissionForm.clearValidate()
         })
       },
       editPermission (permission) {
@@ -149,7 +149,7 @@
         this.permissionTree = [{id: -1, name: '顶级', children: cloneDeep(this.permissionTable)}]
         setTreeDisable(permission.id, this.permissionTree)
         this.$nextTick(() => {
-          this.$refs.permissionForm.clearValidate()
+          this.$refs.permissionForm && this.$refs.permissionForm.clearValidate()
         })
       },
       deletePermission (permission) {

@@ -130,7 +130,7 @@
         this.dictionaryTypeForm.title = ''
         this.dictionaryTypeForm.slug = ''
         this.$nextTick(() => {
-          this.$refs.dictionaryTypeForm.clearValidate()
+          this.$refs.dictionaryTypeForm && this.$refs.dictionaryTypeForm.clearValidate()
         })
       },
       editDictionaryType (dictionaryType, node, e) {
@@ -141,7 +141,7 @@
         this.dictionaryTypeForm.title = dictionaryType.title
         this.dictionaryTypeForm.slug = dictionaryType.slug
         this.$nextTick(() => {
-          this.$refs.dictionaryTypeForm.clearValidate()
+          this.$refs.dictionaryTypeForm && this.$refs.dictionaryTypeForm.clearValidate()
         })
       },
       deleteDictionaryType (dictionaryType, node, e) {

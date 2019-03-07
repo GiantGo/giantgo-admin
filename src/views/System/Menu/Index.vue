@@ -10,7 +10,6 @@
             :expand-on-click-node="false"
             :props="defaultProps"
             highlight-current
-            @node-drop="handleDrop"
             @node-click="editMenu">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>
@@ -157,7 +156,7 @@
         this.menuForm.order = ''
         this.menuBreadcrumbs = this.generateMenuBreadcrumb([this.menuForm], node)
         this.$nextTick(() => {
-          this.$refs.menuForm.clearValidate()
+          this.$refs.menuForm && this.$refs.menuForm.clearValidate()
         })
       },
       editMenu (menu, node) {
@@ -169,7 +168,7 @@
         this.menuForm.order = menu.order
         this.menuBreadcrumbs = this.generateMenuBreadcrumb([this.menuForm], node.parent)
         this.$nextTick(() => {
-          this.$refs.menuForm.clearValidate()
+          this.$refs.menuForm && this.$refs.menuForm.clearValidate()
         })
       },
       removeMenu (menu, node, e) {
@@ -216,9 +215,6 @@
             })
           }
         })
-      },
-      handleDrop (draggingNode, dropNode, dropType, ev) {
-        console.log('tree drop: ', draggingNode, dropNode, dropType)
       }
     },
     mounted () {
