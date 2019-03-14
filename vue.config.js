@@ -6,6 +6,7 @@ function resolve (dir) {
 }
 
 module.exports = {
+  transpileDependencies: ['element-ui'],
   chainWebpack: (config) => {
     config.resolve.alias
       .set('@', resolve('src'))
