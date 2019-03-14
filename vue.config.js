@@ -6,7 +6,7 @@ function resolve (dir) {
 }
 
 module.exports = {
-  transpileDependencies: ['element-ui'],
+  transpileDependencies: ['element-ui', 'vue-socket.io'],
   chainWebpack: (config) => {
     config.resolve.alias
       .set('@', resolve('src'))
