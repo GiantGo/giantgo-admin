@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input placeholder="用户名/姓名/邮箱/手机/身份证号" v-model="userList.keyword" style="width: 250px;" clearable
+                class="filter-item" @keyup.enter.native="getUserList"/>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addUser">
         添加
       </el-button>
@@ -196,6 +198,7 @@
         userList: {
           items: [],
           loading: false,
+          keyword: '',
           pager: {
             page: 1,
             limit: 5,
