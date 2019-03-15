@@ -5,8 +5,8 @@ const state = {}
 const getters = {}
 
 const actions = {
-  getRoleList ({commit}, {page, limit}) {
-    return getRoleList(page, limit)
+  getRoleList ({commit}, {page, limit, keyword}) {
+    return getRoleList(page, limit, keyword)
   },
   getRole ({commit}, {roleId}) {
     return getRole(roleId)

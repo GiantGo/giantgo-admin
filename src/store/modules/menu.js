@@ -15,6 +15,10 @@ const matchComponent = (menus, matches) => {
         icon: menu.icon
       }
 
+      if (!menu.children) {
+        menu.children = []
+      }
+
       if (menu.children && match.children && menu.children.length && match.children.length) {
         matchComponent(menu.children, match.children)
       }

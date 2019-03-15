@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
-export function getRoleList (page, limit) {
+export function getRoleList (page, limit, keyword) {
   return request({
     url: '/roles',
     method: 'GET',
     params: {
-      page, limit
+      page, limit, keyword
     }
   })
 }

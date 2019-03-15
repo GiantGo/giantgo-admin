@@ -3,6 +3,10 @@
     <div class="filter-container">
       <el-input placeholder="用户名/姓名/邮箱/手机/身份证号" v-model="userList.keyword" style="width: 250px;" clearable
                 class="filter-item" @keyup.enter.native="getUserList"/>
+      <el-button :loading="userList.loading" class="filter-item" type="primary" icon="el-icon-search"
+                 @click="getUserList">
+        查询
+      </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addUser">
         添加
       </el-button>
@@ -232,14 +236,17 @@
     methods: {
       formatTime,
       getUserList () {
+        this.userList.loading = true
         this.$store.dispatch('getUserList', {
           page: this.userList.pager.page,
           limit: this.userList.pager.limit
         }).then(res => {
           this.userList.items = res.data.rows
           this.userList.pager.total = res.data.count
+          this.userList.loading = false
         }).catch(() => {
           this.$message.error('获取用户失败')
+          this.userList.loading = false
         })
       },
       getRoleList () {

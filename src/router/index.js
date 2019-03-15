@@ -113,8 +113,7 @@ router.beforeEach(function (to, from, next) {
     } else {
       store.dispatch('logout')
       next({
-        name: 'signIn',
-        query: {redirect: to.fullPath}
+        name: 'signIn'
       })
       NProgress.done()
     }

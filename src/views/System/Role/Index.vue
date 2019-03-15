@@ -1,6 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-input placeholder="用户名/姓名/邮箱/手机/身份证号" v-model="roleList.keyword" style="width: 250px;" clearable
+                class="filter-item" @keyup.enter.native="getRoleList"/>
+      <el-button :loading="roleList.loading" class="filter-item" type="primary" icon="el-icon-search"
+                 @click="getRoleList">
+        查询
+      </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addRole">
         添加
       </el-button>
@@ -126,6 +132,7 @@
         roleList: {
           items: [],
           loading: false,
+          keyword: '',
           pager: {
             page: 1,
             limit: 5,
@@ -146,7 +153,8 @@
         this.roleList.loading = true
         this.$store.dispatch('getRoleList', {
           page: this.roleList.pager.page,
-          limit: this.roleList.pager.limit
+          limit: this.roleList.pager.limit,
+          keyword: this.roleList.keyword
         }).then(res => {
           this.roleList.items = res.data.rows
           this.roleList.pager.total = res.data.count
