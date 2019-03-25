@@ -256,7 +256,7 @@
         &:before {
           transform: scale(.6);
           display: inline-block;
-          vertical-align: -3px;
+          vertical-align: -2px;
         }
         &:hover {
           background-color: #b4bccc;

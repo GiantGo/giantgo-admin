@@ -17,6 +17,10 @@ const Dashboard = () => import('../views/Dashboard/Index.vue')
 Vue.use(Router)
 
 export const moduleRoutes = [
+  {
+    path: '/defaultLayout',
+    component: DefaultLayout
+  },
   ...systemRouter
 ]
 
