@@ -10,7 +10,8 @@
             :expand-on-click-node="false"
             :props="defaultProps"
             highlight-current
-            @node-click="editMenu">
+            @node-click="editMenu"
+            ref="menuTree">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>
                 <svg-icon class-name="menu-icon" :icon-class="data.icon" v-if="data.id !== -1"/>{{ node.label }}
@@ -131,6 +132,11 @@
             path: '/',
             children: res.data
           }]
+          if (this.menuForm.id) {
+            this.$nextTick(() => {
+              this.$refs.menuTree.setCurrentKey(this.menuForm.id)
+            })
+          }
         }).catch(() => {
           this.$message.error('获取菜单失败')
         })

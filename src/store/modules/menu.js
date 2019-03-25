@@ -1,7 +1,6 @@
 import { defaultRoute, moduleRoutes } from '@/router'
 import { getMenuTree, createMenu, updateMenu, deleteMenu } from '@/api/menu'
 import { getMyMenus } from '@/api/user'
-import { find } from 'lodash'
 import path from 'path'
 
 const mapComponent = (result, tree, basePath = '') => {
@@ -15,35 +14,28 @@ const mapComponent = (result, tree, basePath = '') => {
   })
 }
 
-const matchComponent = (menus, routes, routeMapper) => {
+const matchComponent = (menus, routeMapper, basePath) => {
   menus.forEach((menu, index) => {
-    const match = find(routes, {path: menu.path})
+    const menuPath = path.resolve(basePath, menu.path)
 
-    menu.name = menu.title
-    menu.meta = {
-      title: menu.title,
-      icon: menu.icon
-    }
-
-    if (match) {
-      menu.component = match.component
-
-      if (menu.children && match.children && menu.children.length && match.children.length) {
-        menu.alwaysShow = true
-        menu.redirect = path.resolve(menu.path, menu.children[0].path)
-        matchComponent(menu.children, match.children, routeMapper)
+    if (!menu.children) {
+      if (menu.parentId === -1) {
+        menus[index] = {
+          component: routeMapper['/defaultLayout'].component,
+          path: menu.path,
+          children: [Object.assign({}, menu, {
+            component: routeMapper.hasOwnProperty(menu.path) ? routeMapper[menu.path].component : undefined,
+            path: ''
+          })]
+        }
+      } else {
+        menu.component = routeMapper.hasOwnProperty(menuPath) ? routeMapper[menuPath].component : undefined
       }
-      // 当只有一级菜单时
-    } else if (menu.parentId === -1 && !menu.children) {
-      menus[index] = {
-        component: routeMapper['/defaultLayout'].component,
-        path: menu.path,
-        moduleId: menu.moduleId,
-        children: [Object.assign({}, menu, {
-          component: routeMapper.hasOwnProperty(menu.path) ? routeMapper[menu.path].component : undefined,
-          path: ''
-        })]
-      }
+    } else {
+      menu.component = routeMapper.hasOwnProperty(menuPath) ? routeMapper[menuPath].component : undefined
+      menu.alwaysShow = true
+      menu.redirect = path.resolve(menu.path, menu.children[0].path)
+      matchComponent(menu.children, routeMapper, menu.path)
     }
   })
 }
@@ -65,7 +57,7 @@ const actions = {
       // 生成路径和组件映射
       mapComponent(routeMapper, moduleRoutes)
       // 根据路由设置菜单对应的组件
-      matchComponent(menus, moduleRoutes, routeMapper)
+      matchComponent(menus, routeMapper, '/')
 
       commit('SET_MENUS', menus)
       return menus.concat(defaultRoute)
