@@ -3,15 +3,17 @@ import { getMenuTree, createMenu, updateMenu, deleteMenu } from '@/api/menu'
 import { getMyMenus } from '@/api/user'
 import path from 'path'
 
-const mapComponent = (result, tree, basePath = '') => {
+const mapComponent = (tree, result = {}, basePath = '') => {
   tree.forEach(item => {
     let menuPath = path.resolve(basePath, item.path)
     result[menuPath] = item
 
     if (item.children && item.children.length) {
-      mapComponent(result, item.children, menuPath)
+      mapComponent(item.children, result, menuPath)
     }
   })
+
+  return result
 }
 
 const matchComponent = (menus, routeMapper, basePath) => {
@@ -52,10 +54,9 @@ const actions = {
   generateRoutes ({commit}) {
     return getMyMenus().then(response => {
       let menus = response.data
-      let routeMapper = {}
-
       // 生成路径和组件映射
-      mapComponent(routeMapper, moduleRoutes)
+      let routeMapper = mapComponent(moduleRoutes)
+
       // 根据路由设置菜单对应的组件
       matchComponent(menus, routeMapper, '/')
 

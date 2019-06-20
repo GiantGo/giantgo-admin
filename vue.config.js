@@ -83,5 +83,6 @@ module.exports = {
     } else {
       // mutate for development...
     }
-  }
+  },
+  publicPath: './'
 }
