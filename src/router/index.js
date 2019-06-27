@@ -6,6 +6,7 @@ import store from '@/store'
 import { getToken } from '@/utils/token'
 import { checkRoleRoute, checkPermissionRoute } from '@/utils/route'
 import systemRouter from './modules/system'
+import postRouter from './modules/post'
 
 NProgress.configure({showSpinner: false})// NProgress Configuration
 
@@ -21,7 +22,8 @@ export const moduleRoutes = [
     path: '/defaultLayout',
     component: DefaultLayout
   },
-  ...systemRouter
+  ...systemRouter,
+  ...postRouter
 ]
 
 export const defaultRoute = {path: '*', redirect: '/404', hidden: true}
