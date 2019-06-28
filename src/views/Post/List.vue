@@ -18,7 +18,7 @@
       <el-table-column
         label="图片">
         <template slot-scope="scope">
-          <img v-for="extension in scope.row.extensions" :key="extension" :src="extension"/>
+          <img v-for="extension in scope.row.extensions" :key="extension" :src="extension" style="width: 100%;"/>
         </template>
       </el-table-column>
       <el-table-column
